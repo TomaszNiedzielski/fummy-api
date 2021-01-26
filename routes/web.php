@@ -14,5 +14,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    $fullName = 'Tomasz Niedzielski';
+    $nick = '';
+    $fullNameExploded = explode(' ', $fullName);
+    // var_dump($fullNameExploded);
+
+    /*for($i = 0; $i < count($fullNameExploded); $i++) {
+        if($i < count($fullNameExploded)-1) {
+            $nick = $nick.$fullNameExploded[$i].'-';
+        } else {
+            $nick = $nick.$fullNameExploded[$i];
+        }
+    }*/
+
+
+    foreach($fullNameExploded as $i=>$value) {
+        if($i < count($fullNameExploded)-1) {
+            $nick = $nick.$value.'-';
+        } else {
+            $nick = $nick.$value;
+        }
+    }
+
+    $nick = strtolower($nick);
+
+    return $nick;
 });
