@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('nick');
             $table->text('bio')->nullable();
             $table->json('social_media_links')->nullable();
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

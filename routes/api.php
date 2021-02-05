@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\{AuthController, ProfileController, SearchController};
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +26,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
 Route::group(['middleware' => 'api'], function() {
     Route::post('profile/load-details', [ProfileController::class, 'loadProfileDetails']);
     Route::post('profile/update-details', [ProfileController::class, 'updateProfileDetails']);
+
+    Route::post('search', [SearchController::class, 'search']);
 });
