@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileDetailsRequest extends FormRequest
+class ChallengeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class ProfileDetailsRequest extends FormRequest
     public function rules()
     {
         return [
-            'fullName' => 'required|string|max:50',
-            // 'bio' => 'string|max:255',
+            'title' => 'required|max:255',
+            'price' => 'required|numeric'
         ];
     }
 }

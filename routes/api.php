@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController, ProfileController, SearchController};
+use App\Http\Controllers\{AuthController, ProfileController, SearchController, ChallengeController, DonateController};
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +28,11 @@ Route::group(['middleware' => 'api'], function() {
     Route::post('profile/update-details', [ProfileController::class, 'updateProfileDetails']);
 
     Route::post('search', [SearchController::class, 'search']);
+
+    Route::post('challenge/take', [ChallengeController::class, 'takeChallenge']);
+
 });
+
+Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
+
+Route::post('donate', [DonateController::class, 'donate']);

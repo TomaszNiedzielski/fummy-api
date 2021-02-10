@@ -20,5 +20,15 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Interfaces\ProfileInterface',
             'App\Repositories\ProfileRepository'
         );
+
+        $this->app->bind(
+            'App\Interfaces\ChallengeInterface',
+            'App\Repositories\ChallengeRepository'
+        );
+
+        $this->app->bind(
+            'App\Interfaces\DonateInterface',
+            'App\Repositories\DonateRepository'
+        );
     }
 }

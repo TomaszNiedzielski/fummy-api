@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChallengesTable extends Migration
+class CreateDonatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateChallengesTable extends Migration
      */
     public function up()
     {
-        Schema::create('challenges', function (Blueprint $table) {
+        Schema::create('donates', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->string('title');
-            $table->integer('price');
+            $table->string('donator_email');
+            $table->string('donator_name');
+            $table->integer('amount');
+            $table->integer('challenge_id');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateChallengesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('challenges');
+        Schema::dropIfExists('donates');
     }
 }
