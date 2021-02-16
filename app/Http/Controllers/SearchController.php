@@ -15,4 +15,12 @@ class SearchController extends Controller
 
         return response()->json($results);
     }
+
+    public function getAllUsers() {
+        $users = DB::table('users')
+            ->select('full_name as fullName', 'avatar', 'nick')
+            ->get();
+
+        return response()->json($users);
+    }
 }

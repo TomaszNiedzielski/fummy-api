@@ -36,3 +36,5 @@ Route::group(['middleware' => 'api'], function() {
 Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
 
 Route::post('donate', [DonateController::class, 'donate']);
+
+Route::get('users/get', [SearchController::class, 'getAllUsers']);

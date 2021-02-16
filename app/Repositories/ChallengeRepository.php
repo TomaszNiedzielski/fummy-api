@@ -27,8 +27,10 @@ class ChallengeRepository implements ChallengeInterface
             ->orderBy('challenges.created_at', 'desc')
             ->first();
 
-        $challenge->donatesSum = $this->countMoneyFromDonatesPerChallenge($challenge->id);
-        
+        if($challenge) {
+            $challenge->donatesSum = $this->countMoneyFromDonatesPerChallenge($challenge->id);
+        }
+
         return $challenge;
     }
 
