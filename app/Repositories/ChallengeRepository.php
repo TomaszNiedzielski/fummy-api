@@ -16,7 +16,7 @@ class ChallengeRepository implements ChallengeInterface
         $challenge->price = $request->price;
         $challenge->save();
 
-        return 'challenge saved';
+        return $this->getCurrentChallengeByUserNick(auth()->user()->nick);
     }
 
     public function getCurrentChallengeByUserNick(string $nick) {

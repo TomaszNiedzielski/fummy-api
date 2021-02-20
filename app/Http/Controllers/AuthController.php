@@ -7,9 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Traits\ResponseApi;
 
 class AuthController extends Controller
 {
+    use ResponseApi;
+
     /**
      * Create a new AuthController instance.
      *
@@ -30,7 +33,8 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            // return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->error('Niepoprawny e-mail lub hasło.', 401);
         }
 
         return $this->respondWithToken($token);
@@ -42,7 +46,6 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request) {
-        // return response()->json('register');
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|between:2,100|unique:users',
             'email' => 'required|string|email|max:100|unique:users',
@@ -65,11 +68,11 @@ class AuthController extends Controller
 
         $token = auth()->attempt(['email' => $user, 'password' => $request->password]);
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user,
+        $data = (object) [
+            'nick' => $nick,
             'token' => $token
-        ], 201);
+        ];
+        return $this->success($data, 'User successfully registered');
     }
 
     /**
@@ -114,6 +117,7 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
+            'code' => 200,
             'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
