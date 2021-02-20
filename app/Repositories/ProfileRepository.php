@@ -32,6 +32,7 @@ class ProfileRepository implements ProfileInterface
     public function updateProfileDetails(ProfileDetailsRequest $request) {
         $updatesArray = [
             'full_name' => $request->fullName,
+            'nick' => $request->nick,
             'bio' => $request->bio ? $request->bio : '',
             'social_media_links' => $request->socialMediaLinks ? $request->socialMediaLinks : "{}",
         ];

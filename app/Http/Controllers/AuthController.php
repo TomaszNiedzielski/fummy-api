@@ -47,8 +47,9 @@ class AuthController extends Controller
      */
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|between:2,100|unique:users',
+            'full_name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
+            'nick' => 'required|string|max:30|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
@@ -56,23 +57,21 @@ class AuthController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $nick = $this->createNick($request->full_name);
-        $validator->nick = $nick;
-
         $user = new User;
         $user->full_name = $request->full_name;
         $user->email = $request->email;
         $user->password = password_hash($request->password, PASSWORD_DEFAULT);
-        $user->nick = $nick;
+        $user->nick = $request->nick;
         $user->save();
 
         $token = auth()->attempt(['email' => $user, 'password' => $request->password]);
 
         $data = (object) [
-            'nick' => $nick,
+            'nick' => $user->nick,
             'token' => $token
         ];
-        return $this->success($data, 'User successfully registered');
+    
+        return $this->success($data, 'User successfully registered.');
     }
 
     /**
