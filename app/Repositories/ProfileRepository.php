@@ -40,7 +40,7 @@ class ProfileRepository implements ProfileInterface
         if($request->hasFile('avatar')) {
             $updatesArray['avatar'] = $this->moveAvatarToStorage($request->file('avatar'));
         }
- 
+
         $query = DB::table('users')
             ->where('id', auth()->user()->id)
             ->update($updatesArray);

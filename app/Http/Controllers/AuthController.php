@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Traits\ResponseApi;
+use App\Http\Requests\{RegisterRequest, LoginRequest};
 
 class AuthController extends Controller
 {
@@ -28,12 +29,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(LoginRequest $request)
     {
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            // return response()->json(['error' => 'Unauthorized'], 401);
             return $this->error('Niepoprawny e-mail lub hasło.', 401);
         }
 
@@ -45,20 +45,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'nick' => 'required|string|max:30|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
+    public function register(RegisterRequest $request) {
         $user = new User;
-        $user->full_name = $request->full_name;
+        $user->full_name = $request->fullName;
         $user->email = $request->email;
         $user->password = password_hash($request->password, PASSWORD_DEFAULT);
         $user->nick = $request->nick;
