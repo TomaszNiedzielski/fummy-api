@@ -13,4 +13,12 @@ interface DonateInterface
      * @access  public
      */
     public function donate(DonateRequest $request);
+
+    /**
+     * Load donates for specific challenge
+     * 
+     * @method  api/donates/load    POST
+     * @access  public
+     */
+    public function loadDonatesData(int $challengeId);
 }

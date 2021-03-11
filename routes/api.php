@@ -31,6 +31,7 @@ Route::group(['middleware' => 'api'], function() {
 
     Route::post('challenge/take', [ChallengeController::class, 'takeChallenge']);
 
+    Route::post('donates/load', [DonateController::class, 'loadDonatesData']);
 });
 
 Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);

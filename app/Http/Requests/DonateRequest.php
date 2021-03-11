@@ -26,6 +26,7 @@ class DonateRequest extends FormRequest
         return [
             'donatorEmail' => 'required|string|email|max:255',
             'donatorName' => 'required|string|max:50',
+            'message' => 'nullable|string|max:255',
             'amount' => 'required|numeric',
             'challengerNick' => 'required|string|max:255'
         ];
@@ -39,6 +40,7 @@ class DonateRequest extends FormRequest
             'donatorEmail.max' => 'Podany adres e-mail jest za długi.',
             'donatorName.required' => 'Imię jest wymagane.',
             'donatorName.max' => 'Imię musi mieć od 3 do 50 znaków',
+            'message.max' => 'Maksymalna długość wiadomości to 255 znaków.',
             'amount.required' => 'Podaj kwotę, którą chcesz wysłać.',
             'amount.numeric' => 'Kwota musi być liczbą.',
         ];

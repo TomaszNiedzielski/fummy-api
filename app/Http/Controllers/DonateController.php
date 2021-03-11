@@ -22,4 +22,10 @@ class DonateController extends Controller
 
         return $this->success($response);
     }
+
+    public function loadDonatesData(Request $request) {
+        $response = $this->donateInterface->loadDonatesData($request->challengeId);
+
+        return $this->success($response);
+    }
 }
