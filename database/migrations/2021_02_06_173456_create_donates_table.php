@@ -17,7 +17,8 @@ class CreateDonatesTable extends Migration
             $table->id();
             $table->string('donator_email');
             $table->string('donator_name');
-            $table->integer('amount');
+            $table->string('message')->nullable();
+            $table->decimal('amount', 15, 2);
             $table->integer('challenge_id');
             $table->timestamps();
         });
