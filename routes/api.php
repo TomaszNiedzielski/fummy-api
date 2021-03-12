@@ -23,7 +23,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     Route::post('me', [AuthController::class, 'me']);
 });
 
-Route::group(['middleware' => 'api'], function() {
+Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('profile/load-details', [ProfileController::class, 'loadProfileDetails']);
     Route::post('profile/update-details', [ProfileController::class, 'updateProfileDetails']);
 
