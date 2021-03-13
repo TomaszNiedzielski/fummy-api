@@ -15,7 +15,7 @@ use App\Http\Controllers\{AuthController, ProfileController, SearchController, C
 |
 */
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
+Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'auth'], function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
@@ -32,10 +32,10 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('challenge/take', [ChallengeController::class, 'takeChallenge']);
 
     Route::post('donates/load', [DonateController::class, 'loadDonatesData']);
+
+    Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
+
+    Route::post('donate', [DonateController::class, 'donate']);
+
+    Route::get('users/get', [SearchController::class, 'getAllUsers']);
 });
-
-Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
-
-Route::post('donate', [DonateController::class, 'donate']);
-
-Route::get('users/get', [SearchController::class, 'getAllUsers']);
