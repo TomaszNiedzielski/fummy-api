@@ -7,12 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-use App\Traits\ResponseApi;
+use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
 
 class AuthController extends Controller
 {
-    use ResponseApi;
+    use ResponseAPI;
 
     /**
      * Create a new AuthController instance.
