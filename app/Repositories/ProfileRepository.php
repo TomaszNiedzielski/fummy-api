@@ -13,7 +13,7 @@ class ProfileRepository implements ProfileInterface
         if(isset($request->nick)) {
             $profileDetails = DB::table('users')
                 ->where('nick', $request->nick)
-                ->select('full_name as fullName', 'bio', 'social_media_links as socialMediaLinks', 'avatar')
+                ->select('full_name as fullName', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar')
                 ->first();
         } else {
             $profileDetails = DB::table('users')
