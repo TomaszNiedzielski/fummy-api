@@ -6,20 +6,17 @@ use App\Http\Requests\ProfileDetailsRequest;
 use App\Interfaces\ProfileInterface;
 use Illuminate\Http\Request;
 use DB;
+use App\Models\User;
 
 class ProfileRepository implements ProfileInterface
 {
     public function loadProfileDetails(Request $request) {
+        $profileDetails = User::select('full_name as fullName', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar', 'verified as isVerified');
+
         if(isset($request->nick)) {
-            $profileDetails = DB::table('users')
-                ->where('nick', $request->nick)
-                ->select('full_name as fullName', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar')
-                ->first();
+            $profileDetails = $profileDetails->where('nick', $request->nick)->first();
         } else {
-            $profileDetails = DB::table('users')
-                ->where('id', auth()->user()->id)
-                ->select('full_name as fullName', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar')
-                ->first();
+            $profileDetails = $profileDetails->where('id', auth()->user()->id)->first();
         }
 
         $socialMediaLinks = $profileDetails->socialMediaLinks;

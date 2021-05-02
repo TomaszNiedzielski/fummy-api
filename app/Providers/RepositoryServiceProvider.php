@@ -30,5 +30,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Interfaces\DonateInterface',
             'App\Repositories\DonateRepository'
         );
+
+        $this->app->bind(
+            'App\Interfaces\Admin\AdminUsersInterface',
+            'App\Repositories\Admin\AdminUsersRepository'
+        );
     }
 }

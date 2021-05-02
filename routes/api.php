@@ -2,7 +2,18 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController, ProfileController, SearchController, ChallengeController, DonateController};
+use App\Http\Controllers\{
+    AuthController,
+    ProfileController,
+    SearchController,
+    ChallengeController,
+    DonateController
+};
+use App\Http\Controllers\Admin\{
+    AdminAuthController,
+    AdminUsersController
+};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,12 +41,20 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('search', [SearchController::class, 'search']);
 
     Route::post('challenge/take', [ChallengeController::class, 'takeChallenge']);
+    Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
 
     Route::post('donates/load', [DonateController::class, 'loadDonatesData']);
-
-    Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
 
     Route::post('donate', [DonateController::class, 'donate']);
 
     Route::get('users/get', [SearchController::class, 'getAllUsers']);
+});
+
+Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {
+    Route::post('register', [AdminAuthController::class, 'register']);
+    Route::post('login', [AdminAuthController::class, 'login']);
+    
+    Route::group(['prefix' => 'users/load'], function() {
+        Route::post('all', [AdminUsersController::class, 'loadAllUsers']);
+    });
 });

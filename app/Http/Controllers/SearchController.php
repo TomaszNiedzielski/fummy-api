@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Traits\ResponseAPI;
+use App\Models\User;
 
 class SearchController extends Controller
 {
@@ -20,9 +21,7 @@ class SearchController extends Controller
     }
 
     public function getAllUsers() {
-        $users = DB::table('users')
-            ->select('full_name as fullName', 'avatar', 'nick')
-            ->get();
+        $users = User::select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')->get();
 
         return $this->success($users);
     }

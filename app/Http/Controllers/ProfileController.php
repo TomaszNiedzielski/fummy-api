@@ -26,6 +26,6 @@ class ProfileController extends Controller
     public function updateProfileDetails(ProfileDetailsRequest $profileDetailsRequest) {
         $response = $this->profileInterface->updateProfileDetails($profileDetailsRequest);
 
-        return $this->success();
+        return $this->success($response);
     }
 }
