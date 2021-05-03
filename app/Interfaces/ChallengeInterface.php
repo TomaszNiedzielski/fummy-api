@@ -21,4 +21,12 @@ interface ChallengeInterface
      * @access  public
      */
     public function getCurrentChallengeByUserNick(string $nick);
+
+    /**
+     * Edit challenge
+     * 
+     * @method  POST    api/challenge/edit
+     * @access  public
+     */
+    public function editChallenge(ChallengeRequest $request);
 }

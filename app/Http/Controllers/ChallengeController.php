@@ -28,4 +28,10 @@ class ChallengeController extends Controller
 
         return $this->success($response);
     }
+
+    public function editChallenge(ChallengeRequest $request) {
+        $response = $this->challengeInterface->editChallenge($request);
+
+        return $this->success($response);
+    }
 }

@@ -46,4 +46,32 @@ class ChallengeRepository implements ChallengeInterface
 
         return $donatesSum;
     }
+
+    private function getCurrentChallengeId() {
+        $id = DB::table('challenges')
+            ->where('user_id', auth()->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->pluck('id');
+
+        return $id;
+    }
+
+    public function editChallenge(ChallengeRequest $request) {
+        $challengeId = $this->getCurrentChallengeId();
+
+        $challenge = tap(DB::table('challenges')
+            ->where('id', $challengeId))
+            ->update([
+                'title' => $request->title,
+                'price' => $request->price
+            ])
+            ->first();
+
+        if($challenge) {
+            $challenge->createdAt = $challenge->created_at;
+            $challenge->donatesSum = $this->countMoneyFromDonatesPerChallenge($challenge->id);
+        }
+
+        return $challenge;
+    }
 }
