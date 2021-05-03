@@ -44,6 +44,7 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
 
     Route::post('donates/load', [DonateController::class, 'loadDonatesData']);
+    Route::post('donates/count-money', [DonateController::class, 'countMoneyFromDonates']);
 
     Route::post('donate', [DonateController::class, 'donate']);
 

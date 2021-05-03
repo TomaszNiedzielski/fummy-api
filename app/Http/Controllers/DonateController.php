@@ -28,4 +28,10 @@ class DonateController extends Controller
 
         return $this->success($response);
     }
+
+    public function countMoneyFromDonates(Request $request) {
+        $response = $this->donateInterface->countMoneyFromDonates();
+
+        return $this->success($response);
+    }
 }

@@ -21,4 +21,12 @@ interface DonateInterface
      * @access  public
      */
     public function loadDonatesData(int $challengeId);
+
+    /**
+     * Count gathered money in donates for user
+     * 
+     * @method  api/donates/count-money POST
+     * @access  public
+     */
+    public function countMoneyFromDonates();
 }

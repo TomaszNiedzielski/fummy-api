@@ -30,4 +30,19 @@ class DonateRepository extends ChallengeRepository implements DonateInterface
 
         return $donates;
     }
+
+    public function countMoneyFromDonates() {
+        $amounts = DB::table('challenges')
+            ->where('challenges.user_id', auth()->user()->id)
+            ->leftJoin('donates', 'donates.challenge_id', '=', 'challenges.id')
+            ->select('donates.amount')
+            ->get();
+        
+        $money = 0;
+        foreach($amounts as $amount) {
+            $money += $amount->amount;
+        }
+
+        return $money;
+    }
 }
