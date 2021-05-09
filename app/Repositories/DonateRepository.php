@@ -9,6 +9,9 @@ use DB;
 
 class DonateRepository extends ChallengeRepository implements DonateInterface
 {
+    private $HOT_PAY_PROVISION = 3;
+    private $OWN_PROVISION = 6;
+
     public function donate(DonateRequest $request) {
         $donate = new Donate;
         $donate->donator_email = $request->donatorEmail;
@@ -42,6 +45,9 @@ class DonateRepository extends ChallengeRepository implements DonateInterface
         foreach($amounts as $amount) {
             $money += $amount->amount;
         }
+
+        /* Subtract provision from donates */
+        $money = $money - ($money*$this->HOT_PAY_PROVISION/100 + $money*$this->OWN_PROVISION/100);
 
         return $money;
     }
