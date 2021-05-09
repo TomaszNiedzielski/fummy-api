@@ -14,7 +14,7 @@ class SearchController extends Controller
     public function search(Request $request) {
         $results = DB::table('users')
             ->where('users.full_name', 'like', '%'.$request->searchingWord.'%')
-            ->select('full_name as fullName', 'avatar', 'nick')
+            ->select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')
             ->get();
 
         return $this->success($results);
