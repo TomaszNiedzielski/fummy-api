@@ -29,7 +29,7 @@ class DonateRepository extends ChallengeRepository implements DonateInterface
             ->where('challenge_id', $challengeId)
             ->select('donator_name as name', 'message', 'amount', 'created_at as createdAt')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
 
         return $donates;
     }
