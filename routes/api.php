@@ -30,8 +30,7 @@ Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'auth'], function () 
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::post('me', [AuthController::class, 'me']);
+    Route::post('password/update', [AuthController::class, 'updatePassword']);
 });
 
 Route::group(['middleware' => ['api', 'cors']], function() {

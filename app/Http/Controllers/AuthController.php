@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
+use DB;
 
 class AuthController extends Controller
 {
@@ -135,5 +137,24 @@ class AuthController extends Controller
         $nick = strtolower($nick);
 
         return $nick;
+    }
+
+    public function updatePassword(Request $request) {
+        $hash = User::find(auth()->user()->id)->password;
+        if(Hash::check($request->currentPassword, $hash)){
+            DB::table('users')
+                ->where('id', auth()->user()->id)
+                ->update([
+                    'password' => password_hash($request->newPassword, PASSWORD_DEFAULT)
+                ]);
+
+            return $this->success(null, 'Hasło zostało zaaktualizowane.');
+        } else {
+            return $this->error([
+                'errors' => (object) [
+                    'currentPassword' => 'Podane hasło jest nieprawidłowe.'
+                ]
+            ]);
+        }
     }
 }
