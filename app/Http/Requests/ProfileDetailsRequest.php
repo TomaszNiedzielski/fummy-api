@@ -24,8 +24,27 @@ class ProfileDetailsRequest extends FormRequest
     public function rules()
     {
         return [
-            'fullName' => 'required|string|max:50',
-            // 'bio' => 'string|max:255',
+            'fullName' => 'required|between:5,50',
+            'nick' => 'required|regex:/^[a-z0-9_]+$/|string|max:30|unique:users,nick,'.auth()->user()->id,
+            'bio' => 'max:255',
+            'avatar' => 'mimes:jpeg,jpg,png'
+        ];
+    }
+
+    /**
+     * Return error messages in response.
+     * 
+     * @return array 
+     */
+    public function messages()
+    {
+        return [
+            'fullName.required' => 'Imię i nazwisko jest wymagane.',
+            'fullName.between' => 'Imię i nazwisko musi mieć od 5 do 50 znaków.',
+            'nick.required' => 'Nick jest wymagany.',
+            'nick.between' => 'Nick musi mieć od 3 do 30 znaków.',
+            'nick.unique' => 'Ten nick jest zajęty.',
+            'nick.regex' => 'Nick może zawierać jedynie małe litery, cyfry i podkreślenia.'
         ];
     }
 }

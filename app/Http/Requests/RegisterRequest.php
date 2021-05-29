@@ -26,8 +26,8 @@ class RegisterRequest extends FormRequest
         return [
             'fullName' => 'required|string|between:5,50',
             'email' => 'required|string|email|max:255|unique:users',
-            'nick' => 'required|regex:/^[a-z0-9_]+$/|string|max:30|unique:users',
-            'password' => 'required|string|between:6,50'
+            'nick' => 'required|regex:/^[a-z0-9_]+$/|string|between:3,30|unique:users',
+            'password' => 'required|string|between:8,16'
         ];
     }
 
@@ -44,11 +44,13 @@ class RegisterRequest extends FormRequest
             'email.required' => 'Adres e-mail jest wymagany.',
             'email.email' => 'Podaj poprawny adres e-mail.',
             'email.max' => 'Podany adres e-mail jest za długi.',
+            'email.unique' => 'Ten adres e-mail jest zajęty.',
             'nick.required' => 'Nick jest wymagany.',
-            'nick.max' => 'Podany nick jest za długi.',
+            'nick.between' => 'Nick musi mieć od 3 do 30 znaków.',
+            'nick.unique' => 'Ten nick jest zajęty.',
             'nick.regex' => 'Nick może zawierać jedynie małe litery, cyfry i podkreślenia.',
             'password.required' => 'Hasło jest wymagane.',
-            'password.between' => 'Hasło musi mieć od 6 do 50 znaków.'
+            'password.between' => 'Hasło musi mieć od 8 do 16 znaków.'
         ];
     }
 }
