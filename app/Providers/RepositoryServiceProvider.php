@@ -32,6 +32,11 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Interfaces\MailInterface',
+            'App\Repositories\MailRepository'
+        );
+
+        $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
             'App\Repositories\Admin\AdminUsersRepository'
         );

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
 use DB;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
@@ -61,18 +62,11 @@ class AuthController extends Controller
             'nick' => $user->nick,
             'token' => $token
         ];
+
+        // send verification email
+        Route::dispatch(\Request::create('/api/mail/send/verification-mail', 'POST'));
     
         return $this->success($data, 'User successfully registered.');
-    }
-
-    /**
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function me()
-    {
-        return response()->json(auth()->user());
     }
 
     /**

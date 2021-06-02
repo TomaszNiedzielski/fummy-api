@@ -7,7 +7,8 @@ use App\Http\Controllers\{
     ProfileController,
     SearchController,
     ChallengeController,
-    DonateController
+    DonateController,
+    MailController
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -49,6 +50,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('donate', [DonateController::class, 'donate']);
 
     Route::get('users/get', [SearchController::class, 'getAllUsers']);
+
+    Route::post('mail/send/verification-mail', [MailController::class, 'sendVerificationMail']);
+    Route::post('mail/confirm', [MailController::class, 'confirmVerification']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

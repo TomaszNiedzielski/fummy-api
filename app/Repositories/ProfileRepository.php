@@ -11,13 +11,16 @@ use App\Models\User;
 class ProfileRepository implements ProfileInterface
 {
     public function loadProfileDetails(Request $request) {
-        $profileDetails = User::select('full_name as fullName', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar', 'verified as isVerified');
+        $profileDetails = User::select('full_name as fullName', 'email_verified_at as mailVerifiedAt', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar', 'verified as isVerified');
 
         if(isset($request->nick)) {
             $profileDetails = $profileDetails->where('nick', $request->nick)->first();
         } else {
             $profileDetails = $profileDetails->where('id', auth()->user()->id)->first();
         }
+
+        $profileDetails->isMailVerified = $profileDetails->mailVerifiedAt ? true : false;
+        unset($profileDetails->mailVerifiedAt);
 
         $socialMediaLinks = $profileDetails->socialMediaLinks;
         $socialMediaLinks = json_decode($socialMediaLinks);
@@ -46,7 +49,6 @@ class ProfileRepository implements ProfileInterface
     }
 
     protected function moveAvatarToStorage($image) {
-
         $fileNameWithExt = $image->getClientOriginalName();
 
         $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
@@ -58,7 +60,5 @@ class ProfileRepository implements ProfileInterface
         $path = $image->storeAs('public/avatars', $fileNameToStore);
 
         return $fileNameToStore;
-
     }
-
 }
