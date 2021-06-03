@@ -37,6 +37,11 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Interfaces\PasswordInterface',
+            'App\Repositories\PasswordRepository'
+        );
+
+        $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
             'App\Repositories\Admin\AdminUsersRepository'
         );

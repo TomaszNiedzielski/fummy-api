@@ -59,7 +59,6 @@ class MailRepository implements MailInterface
     }
 
     private function createVerificationKey(int $user_id) {
-        $key = Str::random(40);
         $key = new MailVerificationKey();
         $key->user_id = $user_id;
         $key->value = Str::random(40);
