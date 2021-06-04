@@ -13,15 +13,24 @@ class SearchController extends Controller
 
     public function search(Request $request) {
         $results = DB::table('users')
-            ->where('users.full_name', 'like', '%'.$request->searchingWord.'%')
+            ->where([
+                ['full_name', 'like', '%'.$request->searchingWord.'%'],
+                ['verified', '=', true]
+            ])
+            ->orWhere([
+                ['users.nick', 'like', '%'.$request->searchingWord.'%'],
+                ['verified', '=', true]
+            ])
             ->select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')
             ->get();
 
         return $this->success($results);
     }
 
-    public function getAllUsers() {
-        $users = User::select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')->get();
+    public function getVerifiedUsers() {
+        $users = User::select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')
+            ->where('verified', true)
+            ->get();
 
         return $this->success($users);
     }

@@ -50,7 +50,7 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('donate', [DonateController::class, 'donate']);
 
-    Route::get('users/get', [SearchController::class, 'getAllUsers']);
+    Route::get('users/get', [SearchController::class, 'getVerifiedUsers']);
 
     Route::post('mail/send/verification-mail', [MailController::class, 'sendVerificationMail']);
     Route::post('mail/confirm', [MailController::class, 'confirmVerification']);
