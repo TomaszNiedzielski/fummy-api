@@ -15,10 +15,21 @@ interface PasswordInterface
     public function sendResetLink(Request $request);
 
     /**
-     * Change password
+     * Reset password
      * 
-     * @method  api/password/change POST
+     * @method  api/password/reset POST
      * @access  public
      */
-    public function change(Request $request);
+    public function reset(Request $request);
+
+    /**
+     * Update password
+     * 
+     * @method api/password/update  POST
+     * @access  public
+     * 
+     * @param   string  $currentPassword
+     * @param   string  $newPassword
+     */
+    public function update(Request $request);
 }

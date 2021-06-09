@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Interfaces\PasswordInterface;
 use Illuminate\Support\Str;
-use App\Models\PasswordResetKey;
+use App\Models\{PasswordResetKey, User};
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PasswordReset;
 use DB;
+
 
 class PasswordRepository implements PasswordInterface
 {
@@ -48,7 +50,7 @@ class PasswordRepository implements PasswordInterface
         return $key->value;
     }
 
-    public function change(Request $request) {
+    public function reset(Request $request) {
         $key = DB::table('password_reset_keys')
             ->where('value', $request->key)
             ->where('expires_at', '>', date('Y-m-d H:i:s'))
@@ -69,5 +71,25 @@ class PasswordRepository implements PasswordInterface
         }
 
         return (object) ['status' => 'success', 'message' => 'Hasło zostało zmienione.'];
+    }
+
+    public function update(Request $request) {
+        $hash = User::find(auth()->user()->id)->password;
+        if(Hash::check($request->currentPassword, $hash)){
+            DB::table('users')
+                ->where('id', auth()->user()->id)
+                ->update([
+                    'password' => password_hash($request->newPassword, PASSWORD_DEFAULT)
+                ]);
+
+            return (object) ['status' => 'success', 'message' => 'Hasło zostało zaaktualizowane.'];
+        } else {
+            return (object) [
+                'status' => 'error',
+                'errors' => (object) [
+                    'currentPassword' => 'Podane hasło jest nieprawidłowe.'
+                ]
+            ];
+        }
     }
 }

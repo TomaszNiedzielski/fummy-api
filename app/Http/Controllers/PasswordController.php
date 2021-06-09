@@ -26,11 +26,21 @@ class PasswordController extends Controller
         return $this->success($response->message);
     }
 
-    public function change(Request $request) {
-        $response = $this->passwordInterface->change($request);
+    public function reset(Request $request) {
+        $response = $this->passwordInterface->reset($request);
 
         if($response->status === 'error') {
             return $this->error($response->message);
+        }
+
+        return $this->success($response->message);
+    }
+
+    public function update(Request $request) {
+        $response = $this->passwordInterface->update($request);
+
+        if($response->status === 'error') {
+            return $this->error(null, $response->errors);
         }
 
         return $this->success($response->message);

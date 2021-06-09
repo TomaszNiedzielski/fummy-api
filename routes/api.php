@@ -32,7 +32,6 @@ Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'auth'], function () 
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('password/update', [AuthController::class, 'updatePassword']);
 });
 
 Route::group(['middleware' => ['api', 'cors']], function() {
@@ -56,7 +55,8 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('mail/confirm', [MailController::class, 'confirmVerification']);
 
     Route::post('password/send-reset-link', [PasswordController::class, 'sendResetLink']);
-    Route::post('password/change', [PasswordController::class, 'change']);
+    Route::post('password/reset', [PasswordController::class, 'reset']);
+    Route::post('password/update', [PasswordController::class, 'update']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {
