@@ -63,7 +63,7 @@ class AuthController extends Controller
         ];
 
         // send verification email
-        Route::dispatch(\Request::create('/api/mail/send/verification-mail', 'POST'));
+        // Route::dispatch(\Request::create('/api/mail/send/verification-mail', 'POST'));
     
         return $this->success($data, 'User successfully registered.');
     }
