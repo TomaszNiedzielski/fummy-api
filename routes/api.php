@@ -9,7 +9,8 @@ use App\Http\Controllers\{
     ChallengeController,
     DonateController,
     MailController,
-    PasswordController
+    PasswordController,
+    OfferController
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -40,15 +41,6 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('search', [SearchController::class, 'search']);
 
-    Route::post('challenge/take', [ChallengeController::class, 'takeChallenge']);
-    Route::get('challenge/get-current/{nick}', [ChallengeController::class, 'getCurrentChallengeByUserNick']);
-    Route::post('challenge/edit', [ChallengeController::class, 'editChallenge']);
-
-    Route::post('donates/load', [DonateController::class, 'loadDonatesData']);
-    Route::post('donates/count-money', [DonateController::class, 'countMoneyFromDonates']);
-
-    Route::post('donate', [DonateController::class, 'donate']);
-
     Route::get('users/get', [SearchController::class, 'getVerifiedUsers']);
 
     Route::post('mail/send/verification-mail', [MailController::class, 'sendVerificationMail']);
@@ -57,6 +49,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('password/send-reset-link', [PasswordController::class, 'sendResetLink']);
     Route::post('password/reset', [PasswordController::class, 'reset']);
     Route::post('password/update', [PasswordController::class, 'update']);
+
+    Route::post('offer/update', [OfferController::class, 'update']);
+    Route::get('offer/load/{nick}', [OfferController::class, 'load']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

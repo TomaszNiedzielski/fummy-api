@@ -22,16 +22,6 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            'App\Interfaces\ChallengeInterface',
-            'App\Repositories\ChallengeRepository'
-        );
-
-        $this->app->bind(
-            'App\Interfaces\DonateInterface',
-            'App\Repositories\DonateRepository'
-        );
-
-        $this->app->bind(
             'App\Interfaces\MailInterface',
             'App\Repositories\MailRepository'
         );
@@ -39,6 +29,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Interfaces\PasswordInterface',
             'App\Repositories\PasswordRepository'
+        );
+
+        $this->app->bind(
+            'App\Interfaces\OfferInterface',
+            'App\Repositories\OfferRepository'
         );
 
         $this->app->bind(
