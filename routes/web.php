@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VideoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +41,13 @@ Route::get('/', function () {
     $nick = strtolower($nick);
 
     return $nick;
+});
+
+Route::get('thumbnail', [VideoController::class, 'createThumbnail']);
+
+Route::get('test', function () {
+    $variable = 'KutasByCipka';
+    $variable = substr($variable, 0, strpos($variable, "."));
+
+    echo $variable;
 });

@@ -6,11 +6,10 @@ use App\Http\Controllers\{
     AuthController,
     ProfileController,
     SearchController,
-    ChallengeController,
-    DonateController,
     MailController,
     PasswordController,
-    OfferController
+    OfferController,
+    VideoController
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -52,6 +51,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('offer/update', [OfferController::class, 'update']);
     Route::get('offer/load/{nick}', [OfferController::class, 'load']);
+
+    Route::post('video/upload', [VideoController::class, 'upload']);
+    Route::get('videos/get-list/{nick}', [VideoController::class, 'getList']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {
