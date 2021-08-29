@@ -22,7 +22,7 @@ class VideoRepository implements VideoInterface
         $video->user_id = auth()->user()->id;
         $video->name = $videoNameToStore;
         $video->thumbnail = $this->createThumbnailFrom($videoNameToStore);
-        $video->order_id = 1;
+        $video->order_id = $request->orderId;
         $video->save();
 
         return (object) ['status' => 'success', 'message' => 'Video zostało zapisane.'];
@@ -45,6 +45,10 @@ class VideoRepository implements VideoInterface
         $videos = DB::table('users')
             ->where('nick', $nick)
             ->join('videos', 'videos.user_id', '=', 'users.id')
+            ->join('orders', function($join) {
+                $join->on('orders.id', '=', 'videos.order_id')
+                ->where('is_private', false);
+            })
             ->select('videos.name', 'videos.thumbnail')
             ->get();
 
