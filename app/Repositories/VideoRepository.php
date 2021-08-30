@@ -7,6 +7,8 @@ use App\Http\Requests\VideoRequest;
 use App\Models\Video;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Video as VideoMail;
 
 class VideoRepository implements VideoInterface
 {
@@ -24,6 +26,10 @@ class VideoRepository implements VideoInterface
         $video->thumbnail = $this->createThumbnailFrom($videoNameToStore);
         $video->order_id = $request->orderId;
         $video->save();
+
+        if(isset($video->id)) {
+            $this->sendEmail($video->order_id, $video->name);
+        }
 
         return (object) ['status' => 'success', 'message' => 'Video zostało zapisane.'];
     }
@@ -53,5 +59,13 @@ class VideoRepository implements VideoInterface
             ->get();
 
         return $videos;
+    }
+
+    private function sendEmail(int $orderId, string $videoName) {
+        $purchaserEmail = DB::table('orders')
+            ->where('id', $orderId)
+            ->pluck('purchaser_email');
+
+        Mail::to($purchaserEmail)->send(new VideoMail($videoName));
     }
 }
