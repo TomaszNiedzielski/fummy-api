@@ -9,6 +9,7 @@ use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Video as VideoMail;
+use FFMpeg\Filters\Video\VideoFilters;
 
 class VideoRepository implements VideoInterface
 {
@@ -20,10 +21,23 @@ class VideoRepository implements VideoInterface
         $videoNameToStore = $videoName.'_'.time().mt_rand( 0, 0xffff ).'.'.$extension;
         $path = $video->storeAs('public/videos', $videoNameToStore);
 
+        $resizedVideoName = 'resized_'.$videoNameToStore;
+        FFMpeg::fromDisk('videos')
+            ->open($videoNameToStore)
+            ->addFilter(function (VideoFilters $filters) {
+                $filters->resize(new \FFMpeg\Coordinate\Dimension(576, 1024));
+            })
+            ->export()
+            ->toDisk('videos')
+            ->inFormat(new \FFMpeg\Format\Video\X264)
+            ->save($resizedVideoName);
+
+        unlink(storage_path('app/public/videos/'.$videoNameToStore));
+
         $video = new Video;
         $video->user_id = auth()->user()->id;
         $video->name = $videoNameToStore;
-        $video->thumbnail = $this->createThumbnailFrom($videoNameToStore);
+        $video->thumbnail = $this->createThumbnailFrom($resizedVideoName);
         $video->order_id = $request->orderId;
         $video->save();
 
