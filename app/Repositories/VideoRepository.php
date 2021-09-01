@@ -36,7 +36,7 @@ class VideoRepository implements VideoInterface
 
         $video = new Video;
         $video->user_id = auth()->user()->id;
-        $video->name = $videoNameToStore;
+        $video->name = $resizedVideoName;
         $video->thumbnail = $this->createThumbnailFrom($resizedVideoName);
         $video->order_id = $request->orderId;
         $video->save();
@@ -70,6 +70,7 @@ class VideoRepository implements VideoInterface
                 ->where('is_private', false);
             })
             ->select('videos.name', 'videos.thumbnail')
+            ->orderBy('videos.created_at', 'desc')
             ->get();
 
         return $videos;
