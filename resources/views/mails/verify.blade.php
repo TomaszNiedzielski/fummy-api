@@ -2,7 +2,7 @@
 
 ## Witaj {{ $userName }},
 
-dziękujemy za utworzenie konta w serwisie FameChallenge
+dziękujemy za utworzenie konta w serwisie {{ config('app.name') }}
 
 Potwierdź swój adres e-mail, klikając przycisk poniżej.
 
