@@ -7,20 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class Video extends Mailable
+class VideoMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     protected $videoName;
+    protected $nick;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $videoName)
+    public function __construct(string $videoName, string $nick)
     {
         $this->videoName = $videoName;
+        $this->nick = $nick;
     }
 
     /**
@@ -33,7 +35,10 @@ class Video extends Mailable
         $frontendUrl = \Config::get('constans.frontend_url');
 
         return $this->markdown('mails.video')
-            ->subject('O to zamówione przez ciebie video.')
-            ->with('url', $frontendUrl.'/u/'.auth()->user()->nick.'/video/'.$this->videoName);
+            ->subject('Twoje zamówienie zostało zrealizowane.')
+            ->with([
+                'url' => $frontendUrl.'/u/'.$this->nick.'/video/'.$this->videoName,
+                'nick' => $this->nick
+            ]);
     }
 }

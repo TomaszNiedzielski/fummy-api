@@ -8,7 +8,7 @@ use DB;
 use App\Models\MailVerificationKey;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Verify;
+use App\Mail\VerifyMail;
 
 class MailRepository implements MailInterface
 {
@@ -53,7 +53,7 @@ class MailRepository implements MailInterface
 
         $key = $this->createVerificationKey($user->id);
 
-        Mail::to($user->email)->send(new Verify($user->id, $user->nick, $key));
+        Mail::to($user->email)->send(new VerifyMail($user->id, $user->nick, $key));
 
         return 'E-mail został wysłany.';
     }

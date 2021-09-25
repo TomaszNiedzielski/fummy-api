@@ -8,7 +8,7 @@ use App\Models\Video;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 use DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Video as VideoMail;
+use App\Mail\VideoMail;
 use FFMpeg\Filters\Video\VideoFilters;
 
 class VideoRepository implements VideoInterface
@@ -81,6 +81,6 @@ class VideoRepository implements VideoInterface
             ->where('id', $orderId)
             ->pluck('purchaser_email');
 
-        Mail::to($purchaserEmail)->send(new VideoMail($videoName));
+        Mail::to($purchaserEmail)->send(new VideoMail($videoName, auth()->user()->nick));
     }
 }

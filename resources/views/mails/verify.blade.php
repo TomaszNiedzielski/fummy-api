@@ -1,15 +1,18 @@
 @component('mail::message')
 
-## Witaj {{ $userName }},
+# Witaj, {{ $userName }}!
 
-dziękujemy za utworzenie konta w serwisie {{ config('app.name') }}
+### Dziękujemy za utworzenie konta i dołączenie do rodziny <span style="color: #df2674;">{{ config('app.name') }}</span>.
 
-Potwierdź swój adres e-mail, klikając przycisk poniżej.
+## Potwierdź swój adres e-mail,
+### klikając przycisk poniżej.
+
+<div style="display: flex; justify-content: center">
+    <img alt="finger" src="/icons/hand.png" height=80px />
+</div>
 
 @component('mail::button', ['url' => $url])
-Potwierdź
+POTWIERDŹ
 @endcomponent
 
-Z poważaniem,<br>
-{{ config('app.name') }}
 @endcomponent

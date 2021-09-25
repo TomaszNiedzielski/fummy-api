@@ -1,11 +1,9 @@
 @component('mail::message')
 
-## O to video nagrane specjalnie dla Ciebie.
+### Hurra! {{ $nick }} nagrał(a) dla Ciebie zamówione video.
 
 @component('mail::button', ['url' => $url])
 Zobacz
 @endcomponent
 
-Z poważaniem,<br>
-{{ config('app.name') }}
 @endcomponent

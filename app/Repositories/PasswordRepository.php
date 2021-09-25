@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Interfaces\PasswordInterface;
 use Illuminate\Support\Str;
-use App\Models\{PasswordResetKey, User};
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PasswordReset;
+use App\Mail\PasswordResetMail;
 use DB;
-
 
 class PasswordRepository implements PasswordInterface
 {
@@ -34,20 +33,23 @@ class PasswordRepository implements PasswordInterface
 
         $key = $this->createPasswordResetKey($request->email);
 
-        Mail::to($request->email)->send(new PasswordReset($key));
+        Mail::to($request->email)->send(new PasswordResetMail($key));
 
         return (object) ['status' => 'success', 'message' => 'E-mail z linkiem do resetu hasła został wysłany na podany adres.'];
     }
 
     private function createPasswordResetKey(string $email) {
-        $key = new PasswordResetKey();
-        $key->email = $email;
-        $key->value = Str::random(40);
-        $key->created_at = date('Y-m-d H:i:s');
-        $key->expires_at = date('Y-m-d H:i:s', strtotime('+14 days'));
-        $key->save();
+        $key = Str::random(40);
 
-        return $key->value;
+        DB::table('password_reset_keys')
+            ->insert([
+                'email' => $email,
+                'value' => $key,
+                'created_at' => date('Y-m-d H:i:s'),
+                'expires_at' => date('Y-m-d H:i:s', strtotime('+14 days'))
+            ]);
+
+        return $key;
     }
 
     public function reset(Request $request) {
