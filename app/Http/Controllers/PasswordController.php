@@ -19,11 +19,7 @@ class PasswordController extends Controller
     public function sendResetLink(Request $request) {
         $response = $this->passwordInterface->sendResetLink($request);
 
-        if($response->status === 'error') {
-            return $this->error($response->message);
-        }
-
-        return $this->success($response->message);
+        return $this->success($response);
     }
 
     public function reset(Request $request) {

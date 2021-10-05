@@ -19,7 +19,7 @@ class PasswordRepository implements PasswordInterface
             ->exists();
         
         if(!$emailExists) {
-            return (object) ['status' => 'error', 'message' => 'Nie znaleziono użytkownika z podanym adresem e-mail.'];
+            return (object) ['status' => 'info', 'message' => 'Nie znaleziono użytkownika z podanym adresem e-mail.'];
         }
 
         $keysFromLastDay = DB::table('password_reset_keys')
@@ -28,7 +28,7 @@ class PasswordRepository implements PasswordInterface
             ->get();
 
         if(count($keysFromLastDay) >= 3) {
-            return (object) ['status' => 'error', 'message' => 'Limit wysłanych linków do resetu hasła został wykorzystany. Spróbuj ponownie jutro.'];
+            return (object) ['status' => 'info', 'message' => 'Limit wysłanych linków do resetu hasła został wykorzystany. Spróbuj ponownie jutro.'];
         }
 
         $key = $this->createPasswordResetKey($request->email);
