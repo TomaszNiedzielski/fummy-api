@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\VideoRequest;
 use App\Interfaces\VideoInterface;
 use App\Traits\ResponseAPI;
+use App\Jobs\VideoProcessingJob;
 
 class VideoController extends Controller
 {
@@ -19,6 +20,10 @@ class VideoController extends Controller
 
     public function upload(VideoRequest $request) {
         $response = $this->videoInterface->upload($request);
+
+        $this->dispatch(new VideoProcessingJob($response->video, auth()->user()->nick));
+
+        unset($response->video);
 
         return $this->success($response);
     }

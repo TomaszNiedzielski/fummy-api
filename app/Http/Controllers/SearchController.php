@@ -30,7 +30,10 @@ class SearchController extends Controller
     public function getVerifiedUsers() {
         $users = DB::table('users')
             ->where('verified', true)
-            ->join('offers', 'offers.user_id', '=', 'users.id')
+            ->join('offers', function($join) {
+                $join->on('offers.user_id', '=', 'users.id')
+                ->where('offers.is_removed', false);
+            })
             ->select('users.full_name as fullName', 'users.avatar', 'users.nick', 'users.verified as isVerified', DB::raw('MIN(offers.price) as priceFrom'), DB::raw('MAX(offers.price) as priceTo'), 'offers.currency')
             ->groupBy('users.full_name', 'users.avatar', 'users.nick', 'users.verified', 'offers.currency')
             ->get();

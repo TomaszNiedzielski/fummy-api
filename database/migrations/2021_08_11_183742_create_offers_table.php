@@ -19,6 +19,7 @@ class CreateOffersTable extends Migration
             $table->string('title');
             $table->decimal('price', 15, 2);
             $table->string('currency');
+            $table->boolean('is_removed')->default(false);
             $table->timestamps();
         });
     }
