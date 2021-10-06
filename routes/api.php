@@ -10,7 +10,8 @@ use App\Http\Controllers\{
     PasswordController,
     OfferController,
     VideoController,
-    OrderController
+    OrderController,
+    IncomeController,
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -58,6 +59,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('order/create', [OrderController::class, 'create']);
     Route::post('orders/load', [OrderController::class, 'load']);
+
+    Route::post('incomes/get-history', [IncomeController::class, 'getIncomesHistory']);
+    Route::post('income/get', [IncomeController::class, 'getIncome']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

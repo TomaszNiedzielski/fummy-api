@@ -21,7 +21,7 @@ class VideoController extends Controller
     public function upload(VideoRequest $request) {
         $response = $this->videoInterface->upload($request);
 
-        $this->dispatch(new VideoProcessingJob($response->video, auth()->user()->nick));
+        $this->dispatch(new VideoProcessingJob($response->video, auth()->user()));
 
         unset($response->video);
 

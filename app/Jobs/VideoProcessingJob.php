@@ -13,24 +13,25 @@ use FFMpeg\Filters\Video\VideoFilters;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoMail;
-use App\Models\Video;
+use App\Models\{Video, Income};
+use Illuminate\Support\Facades\Log;
 
 class VideoProcessingJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private object $video;
-    private string $userNick;
+    private $user;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(object $video, string $userNick)
+    public function __construct(object $video, $user)
     {
         $this->video = $video;
-        $this->userNick = $userNick;
+        $this->user = $user;
     }
 
     /**
@@ -42,10 +43,9 @@ class VideoProcessingJob implements ShouldQueue
     {
         $this->resizeVideo();
         $this->createThumbnail();
-
-        Video::find($this->video->id)->update(['processing_complete' => true]);
-
+        $this->updateVideoAsComplete();
         $this->sendEmailToPurchaser();
+        $this->createIncome();
     }
 
     private function resizeVideo() {
@@ -73,11 +73,33 @@ class VideoProcessingJob implements ShouldQueue
         return $name;
     }
 
+    private function updateVideoAsComplete() {
+        Video::find($this->video->id)->update(['processing_complete' => true]);
+    }
+
     private function sendEmailToPurchaser() {
         $purchaserEmail = DB::table('orders')
             ->where('id', $this->video->order_id)
             ->pluck('purchaser_email');
 
-        Mail::to($purchaserEmail)->send(new VideoMail($this->video->name, $this->userNick));
+        Mail::to($purchaserEmail)->send(new VideoMail($this->video->name, $this->user->nick));
+    }
+
+    private function createIncome() {
+        $grossAmount = DB::table('orders')
+            ->where('orders.id', $this->video->order_id)
+            ->join('offers', 'offers.id', '=', 'orders.offer_id')
+            ->pluck('offers.price');
+
+        $commission = \Config::get('constans.commission');
+        $netAmount = (float)$grossAmount[0]*(1-$commission);
+
+        Log::info($netAmount);
+
+        Income::create([
+            'user_id' => $this->user->id,
+            'net_amount' => $netAmount,
+            'order_id' => $this->video->order_id
+        ]);
     }
 }
