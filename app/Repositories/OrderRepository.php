@@ -28,8 +28,8 @@ class OrderRepository implements OrderInterface
             ->where('offers.user_id', auth()->user()->id)
             ->join('orders', 'orders.offer_id', '=', 'offers.id')
             ->leftJoin('videos', 'videos.order_id', '=', 'orders.id')
-            ->select('orders.id', 'offers.title', 'orders.instructions', 'videos.name as videoName', 'videos.thumbnail', 'videos.processing_complete as processingComplete', 'orders.deadline', 'orders.purchaser_name as purchaser', 'offers.price', 'offers.currency', 'videos.created_at as videoCreatedAt')
-            ->groupBy('orders.id', 'offers.title', 'orders.instructions', 'videos.name', 'videos.thumbnail', 'videos.processing_complete', 'orders.deadline', 'orders.purchaser_name', 'offers.price', 'offers.currency', 'videos.created_at')
+            ->select('orders.id', 'offers.title', 'offers.description', 'orders.instructions', 'videos.name as videoName', 'videos.thumbnail', 'videos.processing_complete as processingComplete', 'orders.deadline', 'orders.purchaser_name as purchaser', 'offers.price', 'offers.currency', 'videos.created_at as videoCreatedAt')
+            ->groupBy('orders.id', 'offers.title', 'offers.description', 'orders.instructions', 'videos.name', 'videos.thumbnail', 'videos.processing_complete', 'orders.deadline', 'orders.purchaser_name', 'offers.price', 'offers.currency', 'videos.created_at')
             ->orderBy('videos.created_at', 'desc')
             ->orderBy('orders.created_at', 'desc')
             ->get();

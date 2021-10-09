@@ -17,6 +17,7 @@ class CreateOffersTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('title');
+            $table->string('description');
             $table->decimal('price', 15, 2);
             $table->string('currency');
             $table->boolean('is_removed')->default(false);

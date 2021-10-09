@@ -51,8 +51,8 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('password/reset', [PasswordController::class, 'reset']);
     Route::post('password/update', [PasswordController::class, 'update']);
 
-    Route::post('offer/update', [OfferController::class, 'update']);
-    Route::get('offer/load/{nick}', [OfferController::class, 'load']);
+    Route::post('offers/update', [OfferController::class, 'update']);
+    Route::get('offers/load/{nick}', [OfferController::class, 'load']);
 
     Route::post('video/upload', [VideoController::class, 'upload']);
     Route::get('videos/get-list/{nick}', [VideoController::class, 'getList']);

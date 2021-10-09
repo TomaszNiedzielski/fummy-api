@@ -10,79 +10,92 @@ use DB;
 class OfferRepository implements OfferInterface
 {
     public function update(OfferRequest $request) {
-        $offer = $request->offerData;
+        $newOffers = $request->offers;
 
-        foreach($offer as $item) {
-            if(!empty($item['id'])) {
+        $oldOffers = $this->load(auth()->user()->nick);
+
+        foreach($newOffers as $newOffer) {
+            $offerToSave = [
+                'user_id' => auth()->user()->id,
+                'title' => $newOffer['title'],
+                'description' => $newOffer['description'],
+                'price' => $newOffer['price'],
+                'currency' => $newOffer['currency']
+            ];
+
+            if(!empty($newOffer['id'])) {
                 /**
-                 * If item has property isRemoved, remove from DB
+                 * Item is old because has ID
+                 * 
+                 * We fetching matching model from database
                  */
 
-                if(!empty($item['isRemoved'])) {
-                    Offer::where([
-                        'id' => $item['id'],
-                        'user_id' => auth()->user()->id
-                    ])->update([
-                        'is_removed' => true
-                    ]);
-
-                    continue;
-                }
-
-                /**
-                 * Check if this offer item exists
-                 * If yes we cannot update him because someone could take a order on this offer
-                 * So, we need to mark this one as a removed and create a new one.
-                 *                 
-                 * check if item was edited
-                 */
-                $offerItem = Offer::where([
-                    'id' => $item['id'],
+                $matchingOffer = Offer::where([
+                    'id' => $newOffer['id'],
                     'user_id' => auth()->user()->id,
-                    'title' => $item['title'],
-                    'price' => $item['price'],
                     'is_removed' => false
                 ])->first();
 
-                if(!empty($offerItem)) {
+                if(!empty($matchingOffer)) {
                     /**
-                     * If item was returned it means that exist and was not edited
+                     * If item was returned it means that the new one is the same that has been existing in database
+                     * 
+                     * So we need to check if title or price has been edited
                      */
-                    continue;
+
+                    if($matchingOffer->title === $newOffer['title'] && $matchingOffer->price === $newOffer['price'] && $matchingOffer->description === $newOffer['description']) {
+                        // It means that this offer was not edited and we can go to check the next one
+                        continue;
+                    }
+
+                    /**
+                     * It means that offer was edited so we need to mark the old one as removed
+                     */
+                    $matchingOffer->is_removed = true;
+                    $matchingOffer->save();
+
+                    /**
+                     *  And then create the new one
+                     */
+                    Offer::create($offerToSave);
                 }
-
-                /**
-                 * So we need to get this edited model by id and user_id
-                 */
-
-                $offerItem = Offer::where([
-                    'id' => $item['id'],
-                    'user_id' => auth()->user()->id,
-                    'is_removed' => false
-                ])->first();
-                
-                /**
-                 * And mark it as removed
-                 */
-
-                $offerItem->is_removed = true;
-                $offerItem->save();
-
-                /**
-                 * And create a new one
-                 */
-                Offer::create([
-                    'user_id' => auth()->user()->id,
-                    'title' => $item['title'],
-                    'price' => $item['price'],
-                    'currency' => $item['currency']
-                ]);
             } else {
-                Offer::create([
-                    'user_id' => auth()->user()->id,
-                    'title' => $item['title'],
-                    'price' => $item['price'],
-                    'currency' => $item['currency']
+                /**
+                 * If this is new item
+                 */
+
+                Offer::create($offerToSave);
+            }
+        }
+
+        /**
+         * Check if any offer was removed
+         */
+
+        /**
+         * If the new version doesn't contain some element of old version
+         * this old version element needs to be removed
+         */
+
+        foreach($oldOffers as $oldOffer) {
+            $isSet = false;
+
+            foreach($newOffers as $newOffer) {
+                if($newOffer['id'] === $oldOffer->id) {
+                    $isSet = true;
+                }
+            }
+            
+            if(!$isSet) {
+                /**
+                 * The old one is not set in the new set so needs to be removed
+                 */
+
+                Offer::where([
+                    'id' => $oldOffer->id,
+                    'user_id' => auth()->user()->id
+                ])->update([
+                    'is_removed' => true
                 ]);
             }
         }
@@ -97,7 +110,7 @@ class OfferRepository implements OfferInterface
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })
-            ->select('offers.id', 'offers.title', 'offers.price', 'offers.currency')
+            ->select('offers.id', 'offers.title', 'offers.description', 'offers.price', 'offers.currency')
             ->get();
 
         return $offers;
