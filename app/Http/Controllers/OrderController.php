@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Interfaces\OrderInterface;
 use App\Http\Requests\OrderRequest;
 use App\Traits\ResponseAPI;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderNotificationMail;
+use App\Models\{Offer, User};
 
 class OrderController extends Controller
 {
@@ -18,6 +21,11 @@ class OrderController extends Controller
 
     public function create(OrderRequest $request) {
         $response = $this->orderInterface->create($request);
+
+        $talentId = Offer::find(25)->user_id;
+        $talentEmail = User::find($talentId)->email;
+
+        Mail::to($talentEmail)->send(new OrderNotificationMail());
 
         return $this->success($response);
     }
