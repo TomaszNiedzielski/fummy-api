@@ -22,7 +22,7 @@ class OrderController extends Controller
     public function create(OrderRequest $request) {
         $response = $this->orderInterface->create($request);
 
-        $talentId = Offer::find(25)->user_id;
+        $talentId = Offer::find($request->offerId)->user_id;
         $talentEmail = User::find($talentId)->email;
 
         Mail::to($talentEmail)->send(new OrderNotificationMail());
