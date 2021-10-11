@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoMail;
 use App\Models\{Video, Income};
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class VideoProcessingJob implements ShouldQueue
 {
@@ -101,5 +102,10 @@ class VideoProcessingJob implements ShouldQueue
             'net_amount' => $netAmount,
             'order_id' => $this->video->order_id
         ]);
+    }
+
+    public function failed(Throwable $exception) {
+
+        Log::error("Job video processing fail. $exception");
     }
 }
