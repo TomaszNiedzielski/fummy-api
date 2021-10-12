@@ -23,11 +23,6 @@ width: 100% !important;
 width: 100% !important;
 }
 }
-
-@font-face {
-font-family: 'futura-extra-bold-oblique';
-src: url('/fonts/FuturaPTExtraBoldOblique.otf') format('truetype');
-}
 </style>
 
 <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">

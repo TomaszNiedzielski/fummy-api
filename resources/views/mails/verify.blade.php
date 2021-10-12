@@ -8,7 +8,7 @@
 ### klikając przycisk poniżej.
 
 <div style="display: flex; justify-content: center">
-    <img alt="finger" src="/icons/hand.png" height=80px />
+    <img alt="finger" src="{{ asset('icons/hand.png')}}" height=80px />
 </div>
 
 @component('mail::button', ['url' => $url])
