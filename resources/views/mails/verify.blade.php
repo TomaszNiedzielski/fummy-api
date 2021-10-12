@@ -7,7 +7,7 @@
 ## Potwierdź swój adres e-mail,
 ### klikając przycisk poniżej.
 
-<div style="display: flex; justify-content: center">
+<div style="width: 80px; margin: auto;">
     <img alt="finger" src="{{ asset('icons/hand.png')}}" height=80px />
 </div>
 

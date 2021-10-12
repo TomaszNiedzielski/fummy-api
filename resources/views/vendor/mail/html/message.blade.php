@@ -1,6 +1,6 @@
 @component('mail::layout')
 
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
+<div style="display: flex; margin: 0 auto 30px; width: 125px;">
     <img alt="logo" src="{{ asset('icons/logo.png')}}" height="36px" />
     <h1 style="margin: 0 0 0 5px;">Fummy</h1>
 </div>
