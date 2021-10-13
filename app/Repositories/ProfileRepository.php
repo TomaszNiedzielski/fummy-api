@@ -19,12 +19,14 @@ class ProfileRepository implements ProfileInterface
             $profileDetails = $profileDetails->where('id', auth()->user()->id)->first();
         }
 
+        if(!$profileDetails) {
+            return (object) ['status' => 'error', 'code' => 404];
+        }
+
         $profileDetails->isMailVerified = $profileDetails->mailVerifiedAt ? true : false;
         unset($profileDetails->mailVerifiedAt);
 
-        $socialMediaLinks = $profileDetails->socialMediaLinks;
-        $socialMediaLinks = json_decode($socialMediaLinks);
-        $profileDetails->socialMediaLinks = $socialMediaLinks;
+        $profileDetails->socialMediaLinks = json_decode($profileDetails->socialMediaLinks);
 
         return $profileDetails;
     }

@@ -18,9 +18,13 @@ class ProfileController extends Controller
     }
 
     public function loadProfileDetails(Request $request) {
-        $profileDetails = $this->profileInterface->loadProfileDetails($request);
+        $response = $this->profileInterface->loadProfileDetails($request);
 
-        return $this->success($profileDetails);
+        if($response->status === 'error') {
+            return $this->error(null, null, $response->code);
+        }
+
+        return $this->success($response);
     }
 
     public function updateProfileDetails(ProfileDetailsRequest $profileDetailsRequest) {
