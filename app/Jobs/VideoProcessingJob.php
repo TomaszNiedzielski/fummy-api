@@ -58,7 +58,7 @@ class VideoProcessingJob implements ShouldQueue
             ->export()
             ->toDisk('videos')
             ->inFormat(new \FFMpeg\Format\Video\X264)
-            ->save($this->video->name);
+            ->save(pathinfo($this->video->name, PATHINFO_FILENAME).'.mp4');
     }
 
     private function createThumbnail() {
