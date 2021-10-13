@@ -64,7 +64,7 @@ class VideoProcessingJob implements ShouldQueue
     private function createThumbnail() {
         $name = pathinfo($this->video->name, PATHINFO_FILENAME).'.png';
 
-        FFMpeg::fromDisk('original_videos')
+        FFMpeg::fromDisk('videos')
             ->open($this->video->name)
             ->getFrameFromSeconds(1)
             ->export()
