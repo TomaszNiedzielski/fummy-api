@@ -24,7 +24,7 @@ class VideoRequest extends FormRequest
     public function rules()
     {
         return [
-            'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm,mov',
+            'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm,mov,qt',
         ];
     }
 }
