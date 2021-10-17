@@ -7,6 +7,8 @@ use App\Interfaces\ProfileInterface;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\User;
+use Image;
+use Illuminate\Support\Str;
 
 class ProfileRepository implements ProfileInterface
 {
@@ -51,16 +53,13 @@ class ProfileRepository implements ProfileInterface
     }
 
     protected function moveAvatarToStorage($image) {
-        $fileNameWithExt = $image->getClientOriginalName();
-
-        $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
-
         $extension = $image->guessExtension();
+        $fileName = Str::random(30).'.'.$extension;
 
-        $fileNameToStore = $filename.'_'.time().mt_rand( 0, 0xffff ).'.'.$extension;
+        Image::make($image)->resize(600, 600, function($constraint) {
+		    $constraint->aspectRatio();
+		})->save(public_path('storage/avatars/'.$fileName));
 
-        $path = $image->storeAs('public/avatars', $fileNameToStore);
-
-        return $fileNameToStore;
+        return $fileName;
     }
 }
