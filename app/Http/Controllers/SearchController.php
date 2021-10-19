@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
 use App\Traits\ResponseAPI;
-use App\Models\User;
+use DB;
 
 class SearchController extends Controller
 {
@@ -34,19 +33,17 @@ class SearchController extends Controller
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })
-            ->select('users.full_name as fullName', 'users.avatar', 'users.nick', 'users.verified as isVerified', DB::raw('MIN(offers.price) as priceFrom'), DB::raw('MAX(offers.price) as priceTo'), 'offers.currency')
-            ->groupBy('users.full_name', 'users.avatar', 'users.nick', 'users.verified', 'offers.currency')
+            ->select('users.full_name as fullName', 'users.avatar', 'users.nick', DB::raw('MIN(offers.price) as priceFrom'), 'offers.currency')
+            ->groupBy('users.full_name', 'users.avatar', 'users.nick', 'offers.currency')
             ->get();
 
         $updatedUsers = array();
         foreach($users as $user) {
             $user->prices = (object) [
-                'from' => $user->priceFrom.' '.$user->currency,
-                'to' => $user->priceTo.' '.$user->currency
+                'from' => $user->priceFrom,
+                'currency' => $user->currency
             ];
-            unset($user->priceFrom);
-            unset($user->priceTo);
-            unset($user->currency);
+            unset($user->priceFrom, $user->currency);
 
             array_push($updatedUsers, $user);
         }
