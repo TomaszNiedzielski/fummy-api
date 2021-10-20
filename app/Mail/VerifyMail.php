@@ -37,7 +37,7 @@ class VerifyMail extends Mailable
         $frontendUrl = \Config::get('constans.frontend_url');
         
         return $this->markdown('mails.verify')
-            ->subject('Weryfikacja adresu e-mail w FameChallenge')
+            ->subject('Weryfikacja adresu e-mail.')
             ->with('userName', $this->userName)
             ->with('url', $frontendUrl.'/mail/verify?id='.$this->userId.'&key='.$this->key);
     }

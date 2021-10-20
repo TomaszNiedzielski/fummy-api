@@ -10,13 +10,23 @@ body *:not(html):not(style):not(br):not(tr):not(code) {
 
 body {
     -webkit-text-size-adjust: none;
-    background-color: #ffffff;
+    background-color: #f6f9fc;
     color: #718096;
     height: 100%;
     line-height: 1.4;
     margin: 0;
     padding: 0;
     width: 100% !important;
+}
+
+.primary-color {
+    color: #df2674;
+}
+
+.primary-text {
+    color: #232323;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 p,

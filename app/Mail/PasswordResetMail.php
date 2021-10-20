@@ -33,7 +33,7 @@ class PasswordResetMail extends Mailable
         $frontendUrl = \Config::get('constans.frontend_url');
 
         return $this->markdown('mails.password_reset')
-            ->subject('Reset hasła do konta FameChallenge')
+            ->subject('Reset hasła do konta.')
             ->with('url', $frontendUrl.'/password/change?key='.$this->key);
     }
 }
