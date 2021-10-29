@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -22,12 +21,33 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $firstName = $this->faker->firstName();
+
+        $socialMediaLinks = (object) [
+            'instagram' => (object) [
+                'name' => $firstName,
+                'link' => 'https://www.instagram.com/'.$firstName
+            ],
+            'tiktok' => (object) [
+                'name' => $firstName,
+                'link' => 'https://www.tiktok.com/@'.$firstName
+            ],
+            'youtube' => (object) [
+                'name' => $firstName,
+                'link' => 'https://www.youtube.com/c/'.$firstName
+            ],
+        ];
+
         return [
-            'name' => $this->faker->name,
+            'full_name' => $firstName.' '.$this->faker->lastName,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'password' => bcrypt('qwerty123'),
+            'nick' => $this->faker->userName,
+            'bio' => $this->faker->text(),
+            'social_media_links' => json_encode($socialMediaLinks),
+            'avatar' => 'https://i.pravatar.cc/500?'.$this->faker->randomNumber(5),
+            'verified' => 1
         ];
     }
 }
