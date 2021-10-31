@@ -44,7 +44,8 @@ class ProfileDetailsRequest extends FormRequest
             'nick.required' => 'Nick jest wymagany.',
             'nick.between' => 'Nick musi mieć od 3 do 30 znaków.',
             'nick.unique' => 'Ten nick jest zajęty.',
-            'nick.regex' => 'Nick może zawierać jedynie małe litery, cyfry i podkreślenia.'
+            'nick.regex' => 'Nick może zawierać jedynie małe litery, cyfry i podkreślenia.',
+            'bio.max' => 'Bio nie może być dłuższe niż 255 znaków.'
         ];
     }
 }

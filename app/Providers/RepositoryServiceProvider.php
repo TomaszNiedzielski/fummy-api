@@ -52,6 +52,11 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Interfaces\SearchInterface',
+            'App\Repositories\SearchRepository'
+        );
+
+        $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
             'App\Repositories\Admin\AdminUsersRepository'
         );

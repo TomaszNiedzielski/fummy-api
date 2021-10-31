@@ -39,7 +39,7 @@ class MailRepository implements MailInterface
         $user = auth()->user();
 
         if($user->email_verified_at) {
-            return 'Twój adres email jest już zweryfikowany.';
+            return (object) ['code' => 429, 'message' => 'Twój adres email jest już zweryfikowany.'];
         }
 
         $keysFromLastDay = DB::table('mail_verification_keys')
@@ -48,14 +48,14 @@ class MailRepository implements MailInterface
             ->get();
 
         if(count($keysFromLastDay) >= 3) {
-            return 'Limit weryfikacyjnych wiadomości e-mail został wyczerpany. Spróbuj ponownie jutro.';
+            return (object) ['code' => 429, 'message' => 'Limit weryfikacyjnych wiadomości e-mail został wyczerpany. Spróbuj ponownie jutro.'];
         }
 
         $key = $this->createVerificationKey($user->id);
 
         Mail::to($user->email)->send(new VerifyMail($user->id, $user->nick, $key));
 
-        return 'E-mail został wysłany.';
+        return (object) ['code' => 200, 'message' => 'E-mail został wysłany.'];
     }
 
     private function createVerificationKey(int $user_id) {

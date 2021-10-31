@@ -12,12 +12,10 @@ class VideoRepository implements VideoInterface
 {
     public function upload(VideoRequest $request) {
         $video = $request->file('video');
-        $videoNameWithExt = $video->getClientOriginalName();
-        $videoName = pathinfo($videoNameWithExt, PATHINFO_FILENAME);
         $extension = $video->guessExtension();
         $newVideoNameWithoutExt = Str::random(30);
         $videoNameToStore = $newVideoNameWithoutExt.'.'.$extension;
-        $path = $video->storeAs('public/original_videos', $videoNameToStore);
+        $video->storeAs('public/original_videos', $videoNameToStore);
 
         $video = new Video;
         $video->user_id = auth()->user()->id;
@@ -26,7 +24,7 @@ class VideoRepository implements VideoInterface
         $video->order_id = $request->orderId;
         $video->save();
 
-        return (object) ['status' => 'success', 'message' => 'Video zostało zapisane.', 'video' => $video];
+        return (object) ['code' => 200, 'message' => 'Video zostało zapisane.', 'video' => $video];
     }
 
     public function getList(string $nick) {

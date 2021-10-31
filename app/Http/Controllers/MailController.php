@@ -19,15 +19,19 @@ class MailController extends Controller
     public function confirmVerification(Request $request) {
         $response = $this->mailInterface->confirmVerification($request);
 
-        if($response) {
-            return $this->success();
+        if(!$response) {
+            return $this->error();
         }
 
-        return $this->error();
+        return $this->success();
     }
 
     public function sendVerificationMail() {
         $response = $this->mailInterface->sendVerificationMail();
+
+        if($response->code === 429) {
+            return $this->error($response->message, null, $response->code);
+        }
 
         return $this->success($response);
     }

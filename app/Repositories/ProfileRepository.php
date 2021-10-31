@@ -22,7 +22,7 @@ class ProfileRepository implements ProfileInterface
         }
 
         if(!$profileDetails) {
-            return (object) ['status' => 'error', 'code' => 404];
+            return (object) ['code' => 404, 'message' => 'Użytkownika nie znaleziono.'];
         }
 
         $profileDetails->isMailVerified = $profileDetails->mailVerifiedAt ? true : false;
@@ -30,7 +30,7 @@ class ProfileRepository implements ProfileInterface
 
         $profileDetails->socialMediaLinks = json_decode($profileDetails->socialMediaLinks);
 
-        return $profileDetails;
+        return (object) ['code' => 200, 'data' => $profileDetails];
     }
 
     public function updateProfileDetails(ProfileDetailsRequest $request) {
@@ -45,11 +45,11 @@ class ProfileRepository implements ProfileInterface
             $updatesArray['avatar'] = $this->moveAvatarToStorage($request->file('avatar'));
         }
 
-        $query = DB::table('users')
+        DB::table('users')
             ->where('id', auth()->user()->id)
             ->update($updatesArray);
 
-        return $query;
+        return (object) ['code' => 200];
     }
 
     protected function moveAvatarToStorage($image) {

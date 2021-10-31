@@ -19,7 +19,7 @@ class PasswordRepository implements PasswordInterface
             ->exists();
         
         if(!$emailExists) {
-            return (object) ['status' => 'info', 'message' => 'Nie znaleziono użytkownika z podanym adresem e-mail.'];
+            return (object) ['code' => 404, 'message' => 'Nie znaleziono użytkownika z podanym adresem e-mail.'];
         }
 
         $keysFromLastDay = DB::table('password_reset_keys')
@@ -28,14 +28,14 @@ class PasswordRepository implements PasswordInterface
             ->get();
 
         if(count($keysFromLastDay) >= 3) {
-            return (object) ['status' => 'info', 'message' => 'Limit wysłanych linków do resetu hasła został wykorzystany. Spróbuj ponownie jutro.'];
+            return (object) ['code' => 429, 'message' => 'Limit wysłanych linków do resetu hasła został wykorzystany. Spróbuj ponownie jutro.'];
         }
 
         $key = $this->createPasswordResetKey($request->email);
 
         Mail::to($request->email)->send(new PasswordResetMail($key));
 
-        return (object) ['status' => 'success', 'message' => 'E-mail z linkiem do resetu hasła został wysłany na podany adres.'];
+        return (object) ['code' => 200, 'message' => 'E-mail z linkiem do resetu hasła został wysłany na podany adres.'];
     }
 
     private function createPasswordResetKey(string $email) {
@@ -59,39 +59,34 @@ class PasswordRepository implements PasswordInterface
             ->first();
 
         if(!isset($key)) {
-            return (object) ['status' => 'error', 'message' => 'Ten link wygasł lub token jest niepoprawny.'];
+            return (object) ['code' => 410, 'message' => 'Ten link wygasł lub token jest niepoprawny.'];
         }
 
-        $updatedRecords = DB::table('users')
+        DB::table('users')
             ->where('email', $key->email)
             ->update([
                 'password' => password_hash($request->password, PASSWORD_DEFAULT)
             ]);
 
-        if($updatedRecords === 0) {
-            return (object) ['status' => 'error', 'message' => 'Coś poszło nie tak.'];
-        }
-
-        return (object) ['status' => 'success', 'message' => 'Hasło zostało zmienione.'];
+        return (object) ['code' => 200, 'message' => 'Hasło zostało zmienione.'];
     }
 
     public function update(Request $request) {
         $hash = User::find(auth()->user()->id)->password;
-        if(Hash::check($request->currentPassword, $hash)){
-            DB::table('users')
-                ->where('id', auth()->user()->id)
-                ->update([
-                    'password' => password_hash($request->newPassword, PASSWORD_DEFAULT)
-                ]);
 
-            return (object) ['status' => 'success', 'message' => 'Hasło zostało zaaktualizowane.'];
-        } else {
+        if(! Hash::check($request->currentPassword, $hash)){
             return (object) [
-                'status' => 'error',
+                'code' => 400,
                 'errors' => (object) [
                     'currentPassword' => 'Podane hasło jest nieprawidłowe.'
                 ]
             ];
         }
+
+        User::find(auth()->user()->id)->update([
+            'password' => password_hash($request->newPassword, PASSWORD_DEFAULT)
+        ]);
+
+        return (object) ['code' => 200, 'message' => 'Hasło zostało zaaktualizowane.'];
     }
 }
