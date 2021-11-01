@@ -24,9 +24,10 @@ class OfferRequest extends FormRequest
     public function rules()
     {
         return [
-            // '*.title' => 'required|string|between:1,255',
-            // '*.price' => 'required|numeric',
-            // '*.currency' => 'required|string'
+            'offers.*.title' => 'required|string|between:1,30',
+            'offers.*.description' => 'required|string|between:1,255',
+            'offers.*.price' => 'required|numeric|min:0',
+            'offers.*.currency' => 'required|string|max:3'
         ];
     }
 }
