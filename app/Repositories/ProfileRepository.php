@@ -7,11 +7,14 @@ use App\Interfaces\ProfileInterface;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\User;
+use App\Traits\SocialMediaLinksValidator;
 use Image;
 use Illuminate\Support\Str;
 
 class ProfileRepository implements ProfileInterface
 {
+    use SocialMediaLinksValidator;
+
     public function loadProfileDetails(Request $request) {
         $profileDetails = User::select('full_name as fullName', 'email_verified_at as mailVerifiedAt', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar', 'verified as isVerified');
 
@@ -34,6 +37,10 @@ class ProfileRepository implements ProfileInterface
     }
 
     public function updateProfileDetails(ProfileDetailsRequest $request) {
+        if($this->validate($request->socialMediaLinks) === false) {
+            return (object) ['code' => 500];
+        }
+
         $updatesArray = [
             'full_name' => $request->fullName,
             'nick' => $request->nick,

@@ -28,7 +28,11 @@ class ProfileController extends Controller
     }
 
     public function updateProfileDetails(ProfileDetailsRequest $request) {
-        $this->profileInterface->updateProfileDetails($request);
+        $response = $this->profileInterface->updateProfileDetails($request);
+
+        if($response->code !== 200) {
+            return $this->error(null, null, $response->code);
+        }
 
         return $this->success();
     }
