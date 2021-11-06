@@ -24,6 +24,12 @@ class ProfileRepository implements ProfileInterface
             $profileDetails = $profileDetails->where('id', auth()->user()->id)->first();
         }
 
+        if(auth()->check()) {
+            $profileDetails->isDashboard = $profileDetails->nick === auth()->user()->nick;
+        } else {
+            $profileDetails->isDashboard = false;
+        }
+
         if(!$profileDetails) {
             return (object) ['code' => 404, 'message' => 'Użytkownika nie znaleziono.'];
         }
