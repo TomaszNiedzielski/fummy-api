@@ -50,6 +50,7 @@ class VideoProcessingJob implements ShouldQueue
     }
 
     private function resizeVideo() {
+        $newName = pathinfo($this->video->name, PATHINFO_FILENAME).'.mp4';
         FFMpeg::fromDisk('original_videos')
             ->open($this->video->name)
             ->addFilter(function (VideoFilters $filters) {
@@ -58,20 +59,21 @@ class VideoProcessingJob implements ShouldQueue
             ->export()
             ->toDisk('videos')
             ->inFormat(new \FFMpeg\Format\Video\X264)
-            ->save(pathinfo($this->video->name, PATHINFO_FILENAME).'.mp4');
+            ->save($newName);
+
+        if(pathinfo($this->video->name, PATHINFO_EXTENSION) !== 'mp4') {
+            Video::find($this->video->id)->update(['name' => $newName]);
+            $this->video->name = $newName;
+        }
     }
 
     private function createThumbnail() {
-        $name = pathinfo($this->video->name, PATHINFO_FILENAME).'.png';
-
         FFMpeg::fromDisk('videos')
             ->open($this->video->name)
             ->getFrameFromSeconds(1)
             ->export()
             ->toDisk('thumbnails')
-            ->save($name);
-
-        return $name;
+            ->save($this->video->thumbnail);
     }
 
     private function updateVideoAsComplete() {
@@ -105,7 +107,10 @@ class VideoProcessingJob implements ShouldQueue
     }
 
     public function failed(Throwable $exception) {
+        Video::find($this->video->id)->delete();
+        Income::where('order_id', $this->video->order_id)->delete();
 
         Log::error("Job video processing fail. $exception");
+        Log::error("failed video id: ".$this->video->id.", order_id: ".$this->video->order_id);
     }
 }
