@@ -47,7 +47,9 @@ class UserFactory extends Factory
             'bio' => $this->faker->text(),
             'social_media_links' => json_encode($socialMediaLinks),
             'avatar' => 'https://i.pravatar.cc/500?'.$this->faker->randomNumber(5),
-            'verified' => 1
+            'verified' => 1,
+            'is_active' => $this->faker->boolean(80),
+            'is_24_hours_delivery_on' => $this->faker->boolean(50),
         ];
     }
 }

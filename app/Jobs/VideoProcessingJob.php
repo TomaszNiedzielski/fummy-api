@@ -13,7 +13,7 @@ use FFMpeg\Filters\Video\VideoFilters;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoMail;
-use App\Models\{Video, Income};
+use App\Models\{Video, Income, Order};
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -92,10 +92,20 @@ class VideoProcessingJob implements ShouldQueue
         $grossAmount = DB::table('orders')
             ->where('orders.id', $this->video->order_id)
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
-            ->pluck('offers.price');
+            ->value('offers.price');
+
+        $order = Order::find($this->video->order_id);
+
+        $createdAt = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->created_at);
+        $deadline = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->deadline);
 
         $commission = \Config::get('constans.commission');
-        $netAmount = (float)$grossAmount[0]*(1-$commission);
+        
+        if($createdAt->diffInDays($deadline) === 1) {
+            $commission = \Config::get('constans.commission_if_delivery_in_24h');
+        }
+
+        $netAmount = (float)$grossAmount*(1-$commission);
 
         Log::info($netAmount);
 

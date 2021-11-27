@@ -4,11 +4,17 @@ namespace App\Repositories;
 
 use App\Interfaces\OrderInterface;
 use App\Http\Requests\OrderRequest;
+use App\Models\{Offer, User};
 use DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderRepository implements OrderInterface
 {
     public function create(OrderRequest $request) {
+        $userId = Offer::find($request->offerId)->user_id;
+        $is24HoursDeliveryOn = User::find($userId)->is_24_hours_delivery_on;
+        $deadlineIn = $is24HoursDeliveryOn ? '+1 day' : '+7 days';
+
         DB::table('orders')
             ->insert([
                 'offer_id' => $request->offerId,
@@ -17,7 +23,7 @@ class OrderRepository implements OrderInterface
                 'instructions' => $request->instructions,
                 'is_private' => $request->isPrivate,
                 'created_at' => date('Y-m-d H:i:s'),
-                'deadline' => date('Y-m-d H:i:s', strtotime('+7 days'))
+                'deadline' => date('Y-m-d H:i:s', strtotime($deadlineIn))
             ]);
 
         return 'ok';

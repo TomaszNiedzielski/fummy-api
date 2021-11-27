@@ -17,7 +17,19 @@ class SearchRepository implements SearchInterface
                 ['users.nick', 'like', '%'.$searchingWord.'%'],
                 ['verified', '=', true]
             ])
-            ->select('full_name as fullName', 'avatar', 'nick', 'verified as isVerified')
+            ->join('offers', function($join) {
+                $join->on('offers.user_id', '=', 'users.id')
+                ->where('offers.is_removed', false);
+            })
+            ->select(
+                'full_name as fullName',
+                'avatar',
+                'nick',
+                'verified as isVerified',
+                'is_24_hours_delivery_on as is24HoursDeliveryOn',
+                DB::raw('MIN(offers.price) as priceFrom'),
+            )
+            ->groupBy('fullName', 'avatar', 'nick', 'isVerified', 'is24HoursDeliveryOn')
             ->get();
 
         return $results;
@@ -30,8 +42,15 @@ class SearchRepository implements SearchInterface
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })
-            ->select('users.full_name as fullName', 'users.avatar', 'users.nick', DB::raw('MIN(offers.price) as priceFrom'), 'offers.currency')
-            ->groupBy('users.full_name', 'users.avatar', 'users.nick', 'offers.currency')
+            ->select(
+                'users.full_name as fullName',
+                'users.avatar',
+                'users.nick',
+                DB::raw('MIN(offers.price) as priceFrom'),
+                'offers.currency',
+                'users.is_24_hours_delivery_on as is24HoursDeliveryOn'
+            )
+            ->groupBy('fullName', 'avatar', 'nick', 'currency', 'is24HoursDeliveryOn')
             ->get();
 
         $updatedUsers = array();

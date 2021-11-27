@@ -57,6 +57,12 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
+            'App\Interfaces\BankAccountInterface',
+            'App\Repositories\BankAccountRepository'
+        );
+
+        // admin
+        $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
             'App\Repositories\Admin\AdminUsersRepository'
         );

@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->json('social_media_links')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('verified')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_24_hours_delivery_on')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -36,6 +36,8 @@ class User extends Authenticatable implements JWTSubject
         'full_name',
         'email',
         'password',
+        'is_active',
+        'is_24_hours_delivery_on',
     ];
 
     /**
@@ -55,6 +57,8 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'verified' => 'boolean'
+        'verified' => 'boolean',
+        'is_active' => 'boolean',
+        'is_24_hours_delivery_on' => 'boolean',
     ];
 }

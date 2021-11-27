@@ -16,7 +16,17 @@ class ProfileRepository implements ProfileInterface
     use SocialMediaLinksValidator;
 
     public function loadProfileDetails(Request $request) {
-        $profileDetails = User::select('full_name as fullName', 'email_verified_at as mailVerifiedAt', 'nick', 'bio', 'social_media_links as socialMediaLinks', 'avatar', 'verified as isVerified');
+        $profileDetails = User::select(
+            'full_name as fullName',
+            'email_verified_at as mailVerifiedAt',
+            'nick',
+            'bio',
+            'social_media_links as socialMediaLinks',
+            'avatar',
+            'verified as isVerified',
+            'is_active as isActive',
+            'is_24_hours_delivery_on as is24HoursDeliveryOn'
+        );
 
         if(isset($request->nick)) {
             $profileDetails = $profileDetails->where('nick', $request->nick)->first();
@@ -74,5 +84,13 @@ class ProfileRepository implements ProfileInterface
 		})->save(public_path('storage/avatars/'.$fileName));
 
         return $fileName;
+    }
+
+    public function updateActivityStatus(Request $request) {
+        User::find(auth()->user()->id)->update(['is_active' => $request->isActive]);
+    }
+
+    public function updateDeliveryTimeStatus(Request $request) {
+        User::find(auth()->user()->id)->update(['is_24_hours_delivery_on' => $request->is24HoursDeliveryOn]);
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\{
     VideoController,
     OrderController,
     IncomeController,
+    BankAccountController,
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -39,6 +40,8 @@ Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'auth'], function () 
 Route::group(['middleware' => ['api', 'cors']], function() {
     Route::post('profile/load-details', [ProfileController::class, 'loadProfileDetails']);
     Route::post('profile/update-details', [ProfileController::class, 'updateProfileDetails']);
+    Route::post('profile/update-activity-status', [ProfileController::class, 'updateActivityStatus']);
+    Route::post('profile/update-delivery-time-status', [ProfileController::class, 'updateDeliveryTimeStatus']);
 
     Route::post('search', [SearchController::class, 'search']);
 
@@ -62,6 +65,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('incomes/get-history', [IncomeController::class, 'getIncomesHistory']);
     Route::post('income/get', [IncomeController::class, 'getIncome']);
+
+    Route::post('bank-account/update', [BankAccountController::class, 'update']);
+    Route::post('bank-account/get', [BankAccountController::class, 'get']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

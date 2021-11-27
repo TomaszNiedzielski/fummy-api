@@ -14,6 +14,8 @@ class ProfileController extends Controller
     protected $profileInterface;
 
     public function __construct(ProfileInterface $profileInterface) {
+        $this->middleware('auth:api', ['except' => ['loadProfileDetails']]);
+
         $this->profileInterface = $profileInterface;
     }
 
@@ -33,6 +35,18 @@ class ProfileController extends Controller
         if($response->code !== 200) {
             return $this->error(null, null, $response->code);
         }
+
+        return $this->success();
+    }
+
+    public function updateActivityStatus(Request $request) {
+        $this->profileInterface->updateActivityStatus($request);
+
+        return $this->success();
+    }
+
+    public function updateDeliveryTimeStatus(Request $request) {
+        $this->profileInterface->updateDeliveryTimeStatus($request);
 
         return $this->success();
     }
