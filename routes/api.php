@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AuthController,
@@ -13,12 +12,13 @@ use App\Http\Controllers\{
     OrderController,
     IncomeController,
     BankAccountController,
+    PayoutController,
+    AccountBalanceController,
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
     AdminUsersController
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +68,12 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::post('bank-account/update', [BankAccountController::class, 'update']);
     Route::post('bank-account/get', [BankAccountController::class, 'get']);
+
+    Route::post('payout/create-request', [PayoutController::class, 'createRequest']);
+    Route::post('payout/is-request-sent', [PayoutController::class, 'isRequestSent']);
+    Route::post('payout/get-history', [PayoutController::class, 'getPayoutsHistory']);
+
+    Route::post('account-balance/get', [AccountBalanceController::class, 'getAccountBalance']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

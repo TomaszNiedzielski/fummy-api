@@ -1,13 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repositories;
 
 use App\Interfaces\IncomeInterface;
+use App\Repositories\AccountBalanceRepository;
+use Illuminate\Support\Collection;
 use DB;
 
-class IncomeRepository implements IncomeInterface
+class IncomeRepository extends AccountBalanceRepository implements IncomeInterface
 {
-    public function getIncomesHistory() {
+    public function getIncomesHistory(): Collection {
         $incomesHistory = DB::table('incomes')
             ->where('incomes.user_id', auth()->user()->id)
             ->join('orders', 'orders.id', '=', 'incomes.order_id')
@@ -18,19 +20,5 @@ class IncomeRepository implements IncomeInterface
             ->get();
 
         return $incomesHistory;
-    }
-
-    public function getIncome() {
-        $incomes = DB::table('incomes')
-            ->where('user_id', auth()->user()->id)
-            ->select('net_amount')
-            ->get();
-
-        $incomeNetAmount = 0;
-        foreach($incomes as $income) {
-            $incomeNetAmount = $incomeNetAmount + $income->net_amount;
-        }
-
-        return $incomeNetAmount;
     }
 }
