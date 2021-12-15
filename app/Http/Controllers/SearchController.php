@@ -17,13 +17,8 @@ class SearchController extends Controller
     }
 
     public function search(Request $request) {
-        $response = $this->searchInterface->search($request->searchingWord);
-
-        return $this->success($response);
-    }
-
-    public function getVerifiedUsers() {
-        $response = $this->searchInterface->getVerifiedUsers();
+        $q = $request->query('q');
+        $response = $this->searchInterface->search($q);
 
         return $this->success($response);
     }

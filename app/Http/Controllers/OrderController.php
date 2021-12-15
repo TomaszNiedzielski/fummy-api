@@ -16,22 +16,24 @@ class OrderController extends Controller
     protected $orderInterface;
 
     public function __construct(OrderInterface $orderInterface) {
+        $this->middleware('auth:api', ['except' => ['makeOrders']]);
+
         $this->orderInterface = $orderInterface;
     }
 
-    public function create(OrderRequest $request) {
-        $response = $this->orderInterface->create($request);
+    public function makeOrders(OrderRequest $request) {
+        $response = $this->orderInterface->makeOrders($request);
 
         $talentId = Offer::find($request->offerId)->user_id;
         $talentEmail = User::find($talentId)->email;
 
         Mail::to($talentEmail)->send(new OrderNotificationMail());
 
-        return $this->success($response);
+        return $this->success(null, $response->message);
     }
 
-    public function load() {
-        $response = $this->orderInterface->load();
+    public function getOrders() {
+        $response = $this->orderInterface->getOrders();
 
         return $this->success($response);
     }

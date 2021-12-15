@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProfileDetailsRequest;
-use App\Interfaces\ProfileInterface;
+use App\Http\Requests\UserDetailsRequest;
+use App\Interfaces\UserInterface;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\User;
@@ -11,12 +11,44 @@ use App\Traits\SocialMediaLinksValidator;
 use Image;
 use Illuminate\Support\Str;
 
-class ProfileRepository implements ProfileInterface
+class UserRepository implements UserInterface
 {
     use SocialMediaLinksValidator;
 
-    public function loadProfileDetails(Request $request) {
-        $profileDetails = User::select(
+    public function getVerifiedUsers() {
+        $users = DB::table('users')
+            ->where('verified', true)
+            ->join('offers', function($join) {
+                $join->on('offers.user_id', '=', 'users.id')
+                ->where('offers.is_removed', false);
+            })
+            ->select(
+                'users.full_name as fullName',
+                'users.avatar',
+                'users.nick',
+                DB::raw('MIN(offers.price) as priceFrom'),
+                'offers.currency',
+                'users.is_24_hours_delivery_on as is24HoursDeliveryOn'
+            )
+            ->groupBy('fullName', 'avatar', 'nick', 'currency', 'is24HoursDeliveryOn')
+            ->get();
+
+        $updatedUsers = array();
+        foreach($users as $user) {
+            $user->prices = (object) [
+                'from' => $user->priceFrom,
+                'currency' => $user->currency
+            ];
+            unset($user->priceFrom, $user->currency);
+
+            array_push($updatedUsers, $user);
+        }
+
+        return $updatedUsers;
+    }
+
+    public function getUserDetails(Request $request, string $nick = null) {
+        $userDetails = User::select(
             'full_name as fullName',
             'email_verified_at as mailVerifiedAt',
             'nick',
@@ -28,31 +60,31 @@ class ProfileRepository implements ProfileInterface
             'is_24_hours_delivery_on as is24HoursDeliveryOn'
         );
 
-        if(isset($request->nick)) {
-            $profileDetails = $profileDetails->where('nick', $request->nick)->first();
+        if(isset($nick) && $nick !== null) {
+            $userDetails = $userDetails->where('nick', $nick)->first();
         } else {
-            $profileDetails = $profileDetails->where('id', auth()->user()->id)->first();
+            $userDetails = $userDetails->where('id', auth()->user()->id)->first();
         }
 
         if(auth()->check()) {
-            $profileDetails->isDashboard = $profileDetails->nick === auth()->user()->nick;
+            $userDetails->isDashboard = $userDetails->nick === auth()->user()->nick;
         } else {
-            $profileDetails->isDashboard = false;
+            $userDetails->isDashboard = false;
         }
 
-        if(!$profileDetails) {
+        if(!$userDetails) {
             return (object) ['code' => 404, 'message' => 'Użytkownika nie znaleziono.'];
         }
 
-        $profileDetails->isMailVerified = $profileDetails->mailVerifiedAt ? true : false;
-        unset($profileDetails->mailVerifiedAt);
+        $userDetails->isMailVerified = $userDetails->mailVerifiedAt ? true : false;
+        unset($userDetails->mailVerifiedAt);
 
-        $profileDetails->socialMediaLinks = json_decode($profileDetails->socialMediaLinks);
+        $userDetails->socialMediaLinks = json_decode($userDetails->socialMediaLinks);
 
-        return (object) ['code' => 200, 'data' => $profileDetails];
+        return (object) ['code' => 200, 'data' => $userDetails];
     }
 
-    public function updateProfileDetails(ProfileDetailsRequest $request) {
+    public function updateUserDetails(UserDetailsRequest $request) {
         if($this->validate($request->socialMediaLinks) === false) {
             return (object) ['code' => 500];
         }

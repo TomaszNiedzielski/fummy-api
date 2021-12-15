@@ -6,11 +6,12 @@ use App\Interfaces\VideoInterface;
 use App\Http\Requests\VideoRequest;
 use App\Models\Video;
 use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class VideoRepository implements VideoInterface
 {
-    public function upload(VideoRequest $request) {
+    public function uploadVideos(VideoRequest $request) {
         $video = $request->file('video');
         $extension = $video->guessExtension();
         $newVideoNameWithoutExt = Str::random(30);
@@ -27,9 +28,15 @@ class VideoRepository implements VideoInterface
         return (object) ['code' => 200, 'message' => 'Video zostało zapisane.', 'video' => $video];
     }
 
-    public function getList(string $nick) {
+    public function getVideos(Request $request) {
+        $userNick = $request->query('user_nick');
+
+        if(!$userNick) {
+            return (object) ['code' => 400, 'message' => 'Brak informacji o użytkowniku.'];
+        }
+
         $videos = DB::table('users')
-            ->where('nick', $nick)
+            ->where('nick', $userNick)
             ->join('videos', function($join) {
                 $join->on('videos.user_id', '=', 'users.id')
                 ->where('processing_complete', true);
@@ -42,6 +49,6 @@ class VideoRepository implements VideoInterface
             ->orderBy('videos.created_at', 'desc')
             ->get();
 
-        return $videos;
+        return (object) ['code' => 200, 'data' => $videos];
     }
 }

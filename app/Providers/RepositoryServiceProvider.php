@@ -17,11 +17,6 @@ class RepositoryServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            'App\Interfaces\ProfileInterface',
-            'App\Repositories\ProfileRepository'
-        );
-
-        $this->app->bind(
             'App\Interfaces\MailInterface',
             'App\Repositories\MailRepository'
         );

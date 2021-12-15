@@ -7,18 +7,16 @@ use App\Http\Requests\BankAccountRequest;
 interface BankAccountInterface
 {
     /**
-     * Update all bank account details
+     * Create or update bank account details
      * 
-     * @method  api/bank-account/update  POST
-     * @access  public
+     * @method  POST  api/bank-account
      */
-    public function update(BankAccountRequest $request);
+    public function saveBankAccount(BankAccountRequest $request);
 
     /**
      * Get bank account details
      * 
-     * @method  api/bank-account/get    POST
-     * @access  public
+     * @method  GET  api/bank-account
      */
-    public function get();
+    public function getBankAccount();
 }

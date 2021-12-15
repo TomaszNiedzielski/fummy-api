@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\VideoRequest;
 use App\Interfaces\VideoInterface;
 use App\Traits\ResponseAPI;
 use App\Jobs\VideoProcessingJob;
+use Illuminate\Http\Request;
 
 class VideoController extends Controller
 {
@@ -18,8 +18,8 @@ class VideoController extends Controller
         $this->videoInterface = $videoInterface;
     }
 
-    public function upload(VideoRequest $request) {
-        $response = $this->videoInterface->upload($request);
+    public function uploadVideos(VideoRequest $request) {
+        $response = $this->videoInterface->uploadVideos($request);
 
         if($response->code !== 200) {
             return $this->error();
@@ -27,12 +27,16 @@ class VideoController extends Controller
 
         $this->dispatch(new VideoProcessingJob($response->video, auth()->user()));
 
-        return $this->success($response->message);
+        return $this->success(null, $response->message); // Do poprawy kolejność
     }
 
-    public function getList(string $nick) {
-        $response = $this->videoInterface->getList($nick);
+    public function getVideos(Request $request) {
+        $response = $this->videoInterface->getVideos($request);
 
-        return $this->success($response);
+        if($response->code !== 200) {
+            return $this->error($response->message, null, $response->code);
+        }
+
+        return $this->success($response->data);
     }
 }

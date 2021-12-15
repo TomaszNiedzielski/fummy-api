@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AuthController,
-    ProfileController,
+    UserController,
     SearchController,
     MailController,
     PasswordController,
@@ -31,49 +31,53 @@ use App\Http\Controllers\Admin\{
 |
 */
 
-Route::group(['middleware' => ['api', 'cors'], 'prefix' => 'auth'], function () {
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('logout', [AuthController::class, 'logout']);
-});
-
 Route::group(['middleware' => ['api', 'cors']], function() {
-    Route::post('profile/load-details', [ProfileController::class, 'loadProfileDetails']);
-    Route::post('profile/update-details', [ProfileController::class, 'updateProfileDetails']);
-    Route::post('profile/update-activity-status', [ProfileController::class, 'updateActivityStatus']);
-    Route::post('profile/update-delivery-time-status', [ProfileController::class, 'updateDeliveryTimeStatus']);
+    Route::prefix('auth')->group(function() {
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('login', [AuthController::class, 'login'])->name('login');
+        Route::post('logout', [AuthController::class, 'logout']);
+    });
 
-    Route::post('search', [SearchController::class, 'search']);
+    Route::prefix('users')->group(function() {
+        Route::get('verified', [UserController::class, 'getVerifiedUsers']);
+        Route::get('{nick}', [UserController::class, 'getUserDetails'])->where('nick', '[a-z0-9_]{3,}');
+        Route::get('me', [UserController::class, 'getUserDetails']);
+        Route::post('me', [UserController::class, 'updateUserDetails']);
+        Route::put('activity-status', [UserController::class, 'updateActivityStatus']);
+        Route::put('delivery-time-status', [UserController::class, 'updateDeliveryTimeStatus']);
+    });
 
-    Route::get('users/get', [SearchController::class, 'getVerifiedUsers']);
+    Route::get('search-results', [SearchController::class, 'search']);
 
-    Route::post('mail/send/verification-mail', [MailController::class, 'sendVerificationMail']);
-    Route::post('mail/confirm', [MailController::class, 'confirmVerification']);
+    Route::prefix('mail')->group(function() {
+        Route::post('verification-mail', [MailController::class, 'sendVerificationMail']);
+        Route::post('confirm', [MailController::class, 'confirmVerification']);
+    });
 
     Route::post('password/send-reset-link', [PasswordController::class, 'sendResetLink']);
     Route::post('password/reset', [PasswordController::class, 'reset']);
-    Route::post('password/update', [PasswordController::class, 'update']);
+    Route::put('password', [PasswordController::class, 'update']);
 
-    Route::post('offers/update', [OfferController::class, 'update']);
-    Route::get('offers/load/{nick}', [OfferController::class, 'load']);
+    Route::post('offers', [OfferController::class, 'saveOffers']);
+    Route::get('offers', [OfferController::class, 'getOffers']);
 
-    Route::post('video/upload', [VideoController::class, 'upload']);
-    Route::get('videos/get-list/{nick}', [VideoController::class, 'getList']);
+    Route::post('videos', [VideoController::class, 'uploadVideos']);
+    Route::get('videos', [VideoController::class, 'getVideos']);
 
-    Route::post('order/create', [OrderController::class, 'create']);
-    Route::post('orders/load', [OrderController::class, 'load']);
+    Route::post('orders', [OrderController::class, 'makeOrders']);
+    Route::get('orders', [OrderController::class, 'getOrders']);
 
-    Route::post('incomes/get-history', [IncomeController::class, 'getIncomesHistory']);
-    Route::post('income/get', [IncomeController::class, 'getIncome']);
+    Route::get('incomes/history', [IncomeController::class, 'getIncomesHistory']);
+    Route::get('incomes', [IncomeController::class, 'getIncome']);
 
-    Route::post('bank-account/update', [BankAccountController::class, 'update']);
-    Route::post('bank-account/get', [BankAccountController::class, 'get']);
+    Route::post('bank-account', [BankAccountController::class, 'saveBankAccount']);
+    Route::get('bank-account', [BankAccountController::class, 'getBankAccount']);
 
-    Route::post('payout/create-request', [PayoutController::class, 'createRequest']);
-    Route::post('payout/is-request-sent', [PayoutController::class, 'isRequestSent']);
-    Route::post('payout/get-history', [PayoutController::class, 'getPayoutsHistory']);
+    Route::post('payouts/request', [PayoutController::class, 'createRequest']);
+    Route::get('payouts/request/status', [PayoutController::class, 'isRequestSent']);
+    Route::get('payouts/history', [PayoutController::class, 'getPayoutsHistory']);
 
-    Route::post('account-balance/get', [AccountBalanceController::class, 'getAccountBalance']);
+    Route::get('account-balance', [AccountBalanceController::class, 'getAccountBalance']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

@@ -9,16 +9,14 @@ interface OrderInterface
     /**
      * Create order
      * 
-     * @method  api/order/create
-     * @access  public
+     * @method  POST  api/orders
      */
-    public function create(OrderRequest $request);
+    public function makeOrders(OrderRequest $request);
 
     /**
      * Load orders for user
      * 
-     * @method  api/orders/load
-     * @access  public
+     * @method  GET  api/orders
      */
-    public function load();
+    public function getOrders();
 }

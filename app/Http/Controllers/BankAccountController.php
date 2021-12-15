@@ -18,14 +18,14 @@ class BankAccountController extends Controller
         $this->bankAccountInterface = $bankAccountInterface;
     }
 
-    public function update(BankAccountRequest $request) {
-        $this->bankAccountInterface->update($request);
+    public function saveBankAccount(BankAccountRequest $request) {
+        $this->bankAccountInterface->saveBankAccount($request);
 
         return $this->success();
     }
 
-    public function get() {
-        $response = $this->bankAccountInterface->get();
+    public function getBankAccount() {
+        $response = $this->bankAccountInterface->getBankAccount();
 
         return $this->success($response);
     }

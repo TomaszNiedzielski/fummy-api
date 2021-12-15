@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
-use DB;
 use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
@@ -64,7 +60,7 @@ class AuthController extends Controller
 
         // send verification email
         if(\Config::get('constans.app_env') === 'production') {
-            Route::dispatch(\Request::create('/api/mail/send/verification-mail', 'POST'));
+            Route::dispatch(\Request::create('/api/mail/verification-mail', 'POST'));
         }
 
         return $this->success($data, 'User successfully registered.');

@@ -9,10 +9,11 @@ use DB;
 
 class OfferRepository implements OfferInterface
 {
-    public function update(OfferRequest $request) {
+    public function saveOffers(OfferRequest $request) {
         $newOffers = $request->offers;
 
-        $oldOffers = $this->load(auth()->user()->nick);
+        $oldOffersRes = $this->getOffers(auth()->user()->nick);
+        $oldOffers = $oldOffersRes->data;
 
         foreach($newOffers as $newOffer) {
             $offerToSave = [
@@ -100,12 +101,16 @@ class OfferRepository implements OfferInterface
             }
         }
 
-        return $this->load(auth()->user()->nick);
+        return $this->getOffers(auth()->user()->nick);
     }
 
-    public function load(string $nick) {
+    public function getOffers(string $userNick) {
+        if(!$userNick) {
+            return (object) ['code' => 400, 'message' => 'Brak informacji o użytkowniku.'];
+        }
+
         $offers = DB::table('users')
-            ->where('users.nick', $nick)
+            ->where('users.nick', $userNick)
             ->join('offers', function($join) {
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
@@ -113,6 +118,6 @@ class OfferRepository implements OfferInterface
             ->select('offers.id', 'offers.title', 'offers.description', 'offers.price', 'offers.currency')
             ->get();
 
-        return $offers;
+        return (object) ['code' => 200, 'data' => $offers];
     }
 }

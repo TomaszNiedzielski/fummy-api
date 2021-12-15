@@ -9,21 +9,21 @@ interface PayoutInterface
     /**
      * Create payout request
      * 
-     * @method  api/payout/create-request  POST
+     * @method  POST  api/payouts/request
      */
     public function createRequest();
 
     /**
      * Check if request was sent
      * 
-     * @method  api/payout/is-request-sent  POST
+     * @method  GET  api/payouts/request/status
      */
     public function isRequestSent(): bool;
 
     /**
      * Get all payouts history
      * 
-     * @method  api/payout/get-history  POST
+     * @method  GET  api/payouts/history
      */
     public function getPayoutsHistory(): Collection;
 }

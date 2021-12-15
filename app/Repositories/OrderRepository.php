@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class OrderRepository implements OrderInterface
 {
-    public function create(OrderRequest $request) {
+    public function makeOrders(OrderRequest $request) {
         $userId = Offer::find($request->offerId)->user_id;
         $is24HoursDeliveryOn = User::find($userId)->is_24_hours_delivery_on;
         $deadlineIn = $is24HoursDeliveryOn ? '+1 day' : '+7 days';
@@ -26,10 +26,10 @@ class OrderRepository implements OrderInterface
                 'deadline' => date('Y-m-d H:i:s', strtotime($deadlineIn))
             ]);
 
-        return 'ok';
+        return (object) ['code' => 200, 'message' => 'Zamówienie zostało złożone.'];
     }
 
-    public function load() {
+    public function getOrders() {
         $orders = DB::table('offers')
             ->where('offers.user_id', auth()->user()->id)
             ->join('orders', 'orders.offer_id', '=', 'offers.id')

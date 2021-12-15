@@ -3,22 +3,21 @@
 namespace App\Interfaces;
 
 use App\Http\Requests\OfferRequest;
+use Illuminate\Http\Request;
 
 interface OfferInterface
 {
     /**
-     * Update offer
+     * Create or update offers
      * 
-     * @method  api/offer/create  POST
-     * @access  public
+     * @method  POST  api/offers
      */
-    public function update(OfferRequest $request);
+    public function saveOffers(OfferRequest $request);
 
     /**
-     * Load offers per user
+     * Get offers
      * 
-     * @method  api/offer/load  POST
-     * @access  public
+     * @method  GET  api/offers
      */
-    public function load(string $nick);
+    public function getOffers(string $userNick);
 }

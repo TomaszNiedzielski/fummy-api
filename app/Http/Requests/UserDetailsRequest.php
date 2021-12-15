@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileDetailsRequest extends FormRequest
+class UserDetailsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class ProfileDetailsRequest extends FormRequest
     {
         return [
             'fullName' => 'required|between:5,50',
-            'nick' => 'required|regex:/^[a-z0-9_]+$/|string|max:30|unique:users,nick,'.auth()->user()->id,
+            'nick' => 'required|regex:/^[a-z0-9_]+$/|string|between:3,30|unique:users,nick,'.auth()->user()->id,
             'bio' => 'max:255',
             'avatar' => 'mimes:jpeg,jpg,png'
         ];

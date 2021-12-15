@@ -3,22 +3,21 @@
 namespace App\Interfaces;
 
 use App\Http\Requests\VideoRequest;
+use Illuminate\Http\Request;
 
 interface VideoInterface
 {
     /**
      * Upload video
      * 
-     * @method  POST    api/video/upload
-     * @access  public
+     * @method  POST  api/videos
      */
-    public function upload(VideoRequest $request);
+    public function uploadVideos(VideoRequest $request);
 
     /**
      * Get videos list
      * 
-     * @method  GET     api/videos/get-list/{nick}
-     * @access  public
+     * @method  GET  api/videos
      */
-    public function getList(string $nick);
+    public function getVideos(Request $request);
 }
