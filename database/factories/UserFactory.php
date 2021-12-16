@@ -23,7 +23,7 @@ class UserFactory extends Factory
     {
         $firstName = $this->faker->firstName();
 
-        $socialMediaLinks = (object) [
+        $socials = (object) [
             'instagram' => (object) [
                 'name' => $firstName,
                 'link' => 'https://www.instagram.com/'.$firstName
@@ -45,9 +45,9 @@ class UserFactory extends Factory
             'password' => bcrypt('qwerty123'),
             'nick' => $this->faker->userName,
             'bio' => $this->faker->text(),
-            'social_media_links' => json_encode($socialMediaLinks),
+            'socials' => json_encode($socials),
             'avatar' => 'https://i.pravatar.cc/500?'.$this->faker->randomNumber(5),
-            'verified' => 1,
+            'is_verified' => 1,
             'is_active' => $this->faker->boolean(80),
             'is_24_hours_delivery_on' => $this->faker->boolean(50),
         ];

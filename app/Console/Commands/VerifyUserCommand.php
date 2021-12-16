@@ -32,9 +32,7 @@ class VerifyUserCommand extends Command
 
         $updated = DB::table('users')
             ->where('nick', $nick)
-            ->update([
-                'verified' => true
-            ]);
+            ->update(['is_verified' => true]);
 
         if($updated === 0) {
             return $this->error('User has been not found.');

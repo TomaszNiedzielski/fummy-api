@@ -7,17 +7,17 @@ use App\Interfaces\UserInterface;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\User;
-use App\Traits\SocialMediaLinksValidator;
+use App\Traits\SocialsValidator;
 use Image;
 use Illuminate\Support\Str;
 
 class UserRepository implements UserInterface
 {
-    use SocialMediaLinksValidator;
+    use SocialsValidator;
 
     public function getVerifiedUsers() {
         $users = DB::table('users')
-            ->where('verified', true)
+            ->where('is_verified', true)
             ->join('offers', function($join) {
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
@@ -53,9 +53,9 @@ class UserRepository implements UserInterface
             'email_verified_at as mailVerifiedAt',
             'nick',
             'bio',
-            'social_media_links as socialMediaLinks',
+            'socials',
             'avatar',
-            'verified as isVerified',
+            'is_verified as isVerified',
             'is_active as isActive',
             'is_24_hours_delivery_on as is24HoursDeliveryOn'
         );
@@ -79,13 +79,13 @@ class UserRepository implements UserInterface
         $userDetails->isMailVerified = $userDetails->mailVerifiedAt ? true : false;
         unset($userDetails->mailVerifiedAt);
 
-        $userDetails->socialMediaLinks = json_decode($userDetails->socialMediaLinks);
+        $userDetails->socials = json_decode($userDetails->socials);
 
         return (object) ['code' => 200, 'data' => $userDetails];
     }
 
     public function updateUserDetails(UserDetailsRequest $request) {
-        if($this->validate($request->socialMediaLinks) === false) {
+        if($this->validate($request->socials) === false) {
             return (object) ['code' => 500];
         }
 
@@ -93,7 +93,7 @@ class UserRepository implements UserInterface
             'full_name' => $request->fullName,
             'nick' => $request->nick,
             'bio' => $request->bio ? $request->bio : '',
-            'social_media_links' => $request->socialMediaLinks ? $request->socialMediaLinks : "{}",
+            'socials' => $request->socials ? $request->socials : "{}",
         ];
 
         if($request->hasFile('avatar')) {

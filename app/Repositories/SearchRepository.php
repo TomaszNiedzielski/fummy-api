@@ -11,11 +11,11 @@ class SearchRepository implements SearchInterface
         $results = DB::table('users')
             ->where([
                 ['full_name', 'like', '%'.$q.'%'],
-                ['verified', '=', true]
+                ['is_verified', '=', true]
             ])
             ->orWhere([
                 ['users.nick', 'like', '%'.$q.'%'],
-                ['verified', '=', true]
+                ['is_verified', '=', true]
             ])
             ->join('offers', function($join) {
                 $join->on('offers.user_id', '=', 'users.id')
@@ -25,7 +25,7 @@ class SearchRepository implements SearchInterface
                 'full_name as fullName',
                 'avatar',
                 'nick',
-                'verified as isVerified',
+                'is_verified as isVerified',
                 'is_24_hours_delivery_on as is24HoursDeliveryOn',
                 DB::raw('MIN(offers.price) as priceFrom'),
             )

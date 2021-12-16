@@ -21,9 +21,9 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('nick');
             $table->text('bio')->nullable();
-            $table->json('social_media_links')->nullable();
+            $table->json('socials')->nullable();
             $table->string('avatar')->nullable();
-            $table->boolean('verified')->default(false);
+            $table->boolean('is_verified')->default(false);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_24_hours_delivery_on')->default(false);
             $table->rememberToken();

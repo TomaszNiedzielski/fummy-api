@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait SocialMediaLinksValidator
+trait SocialsValidator
 {
     public function validate($links) {
         $links = json_decode($links);
