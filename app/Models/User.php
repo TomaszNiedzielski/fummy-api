@@ -61,4 +61,8 @@ class User extends Authenticatable implements JWTSubject
         'is_active' => 'boolean',
         'is_24_hours_delivery_on' => 'boolean',
     ];
+
+    public function offers() {
+        return $this->hasMany(Offer::class);
+    }
 }

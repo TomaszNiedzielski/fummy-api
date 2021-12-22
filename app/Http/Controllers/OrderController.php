@@ -8,6 +8,7 @@ use App\Traits\ResponseAPI;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderNotificationMail;
 use App\Models\{Offer, User};
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -16,7 +17,7 @@ class OrderController extends Controller
     protected $orderInterface;
 
     public function __construct(OrderInterface $orderInterface) {
-        $this->middleware('auth:api', ['except' => ['makeOrders']]);
+        $this->middleware('auth:api', ['except' => ['makeOrders', 'verifyPurchaseStatus']]);
 
         $this->orderInterface = $orderInterface;
     }
@@ -29,12 +30,19 @@ class OrderController extends Controller
 
         Mail::to($talentEmail)->send(new OrderNotificationMail());
 
-        return $this->success(null, $response->message);
+        return $this->success($response->data, $response->message);
     }
 
     public function getOrders() {
         $response = $this->orderInterface->getOrders();
 
         return $this->success($response);
+    }
+
+    public function verifyPurchaseStatus(Request $request) {
+        $purchaseKey = $request->query('purchase_key');
+        $response = $this->orderInterface->verifyPurchaseStatus($purchaseKey);
+
+        return $this->success($response->data);
     }
 }

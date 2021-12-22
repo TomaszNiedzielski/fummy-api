@@ -20,6 +20,8 @@ class CreateOrdersTable extends Migration
             $table->string('purchaser_email');
             $table->text('instructions');
             $table->boolean('is_private');
+            $table->boolean('is_paid')->default(false);
+            $table->string('purchase_key');
             $table->timestamp('deadline')->nullable();
             $table->timestamps();
         });

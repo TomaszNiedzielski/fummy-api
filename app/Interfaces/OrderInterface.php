@@ -19,4 +19,11 @@ interface OrderInterface
      * @method  GET  api/orders
      */
     public function getOrders();
+
+    /**
+     * Verify status of purchase (paid or unpaid)
+     * \
+     * @method  POST  api/orders/purchase/verify-status?purchase_key=[generated_key]
+     */
+    public function verifyPurchaseStatus(string $purchaseKey);
 }
