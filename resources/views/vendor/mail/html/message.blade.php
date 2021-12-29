@@ -1,7 +1,7 @@
 @component('mail::layout')
 
 <div style="margin-bottom: 30px;">
-    <img alt="logo" src="{{ asset('icons/fummy-logo.png')}}" height="45px" />
+    <img alt="logo" src="{{ asset('icons/fummy-logo.png?v=1')}}" height="45px" />
 </div>
 
 {{-- Body --}}
