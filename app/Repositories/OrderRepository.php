@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\OrderInterface;
 use App\Http\Requests\OrderRequest;
-use App\Models\{Offer, User, Order};
+use App\Models\{Order};
 use DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -111,8 +111,18 @@ class OrderRepository implements OrderInterface
             $order->is_paid = true;
             $order->deadline = date('Y-m-d H:i:s', strtotime($deadlineIn));
             $order->save();
+
+            /* Payment has been completed. Notify user about new order. */
+            $sendNotificationMail = true;
+        } else {
+            $sendNotificationMail = false;
         }
 
-        return (object) ['data' => (object) ['status' => $order->is_paid ? 'paid' : 'unpaid']];
+        return (object) ['data' => (object) [
+            'status' => $order->is_paid ? 'paid' : 'unpaid',
+            'sendNotificationMail' => $sendNotificationMail,
+            'talentEmail' => $order->offer->user->email,
+            'deadline' => $order->offer->user->is_24_hours_delivery_on ? '1 day' : '7 days'
+        ]];
     }
 }

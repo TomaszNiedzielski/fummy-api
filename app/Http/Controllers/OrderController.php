@@ -25,11 +25,6 @@ class OrderController extends Controller
     public function makeOrders(OrderRequest $request) {
         $response = $this->orderInterface->makeOrders($request);
 
-        $talentId = Offer::find($request->offerId)->user_id;
-        $talentEmail = User::find($talentId)->email;
-
-        Mail::to($talentEmail)->send(new OrderNotificationMail());
-
         return $this->success($response->data, $response->message);
     }
 
@@ -42,6 +37,10 @@ class OrderController extends Controller
     public function verifyPurchaseStatus(Request $request) {
         $purchaseKey = $request->query('purchase_key');
         $response = $this->orderInterface->verifyPurchaseStatus($purchaseKey);
+
+        if($response->data->sendNotificationMail === true) {
+            Mail::to($response->data->talentEmail)->send(new OrderNotificationMail($response->data->deadline));
+        }
 
         return $this->success($response->data);
     }

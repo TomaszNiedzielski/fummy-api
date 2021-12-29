@@ -11,14 +11,16 @@ class OrderNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $deadline;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(string $deadline)
     {
-        //
+        $this->deadline = $deadline;
     }
 
     /**
@@ -32,6 +34,7 @@ class OrderNotificationMail extends Mailable
 
         return $this->markdown('mails.order_notification')
             ->subject('Masz nowe zlecenie.')
-            ->with('url', $frontendUrl.'/orders');
+            ->with('url', $frontendUrl.'/orders')
+            ->with('deadline', $this->deadline);
     }
 }

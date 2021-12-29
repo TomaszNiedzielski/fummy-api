@@ -1,7 +1,7 @@
 @component('mail::message')
 
 <div class="primary-text">
-    Jeden z twoich fanów poprosił Cię o nagranie dla niego video. Masz aż 7 dni, aby zrealizować to zamówienie.
+    Jeden z twoich fanów poprosił Cię o nagranie dla niego video. Masz {{ $deadline === '1 day' ? '1 dzień' : 'aż 7 dni' }}, aby zrealizować to zamówienie.
     Nagraj video według podanych przez niego instrukcji.
 </div>
 
