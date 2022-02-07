@@ -66,6 +66,11 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Repositories\AccountBalanceRepository'
         );
 
+        $this->app->bind(
+            'App\Interfaces\MailingAddressInterface',
+            'App\Repositories\MailingAddressRepository'
+        );
+
         // admin
         $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
