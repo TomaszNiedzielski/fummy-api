@@ -90,7 +90,7 @@ class OrderRepository implements OrderInterface
                     'product_data' => [
                         'name' => $orderInfo->title,
                         'description' => $orderInfo->description,
-                        'images' => [\Config::get('constans.frontend_url').'/storage/avatars/'.$orderInfo->avatar]
+                        'images' => [\Config::get('constans.api_url').'/storage/avatars/'.$orderInfo->avatar]
                     ],
                     'unit_amount' => $orderInfo->price*100,
                 ],
