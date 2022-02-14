@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     PayoutController,
     AccountBalanceController,
     MailingAddressController,
+    NotificationController,
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -82,6 +83,9 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::get('account-balance', [AccountBalanceController::class, 'getAccountBalance']);
 
     Route::post('mailing-address', [MailingAddressController::class, 'addEmail']);
+
+    Route::get('notifications', [NotificationController::class, 'getNotifications']);
+    Route::post('notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 });
 
 Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {

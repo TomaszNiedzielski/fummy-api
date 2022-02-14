@@ -71,6 +71,11 @@ class RepositoryServiceProvider extends ServiceProvider
             'App\Repositories\MailingAddressRepository'
         );
 
+        $this->app->bind(
+            'App\Interfaces\NotificationInterface',
+            'App\Repositories\NotificationRepository'
+        );
+
         // admin
         $this->app->bind(
             'App\Interfaces\Admin\AdminUsersInterface',
