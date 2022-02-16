@@ -122,6 +122,7 @@ class OrderRepository implements OrderInterface
             'status' => $order->is_paid ? 'paid' : 'unpaid',
             'sendNotificationMail' => $sendNotificationMail,
             'talentEmail' => $order->offer->user->email,
+            'purchaserEmail' => $order->purchaser_email,
             'deadline' => $order->offer->user->is_24_hours_delivery_on ? '1 day' : '7 days'
         ]];
     }

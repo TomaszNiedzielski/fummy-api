@@ -6,8 +6,7 @@ use App\Interfaces\OrderInterface;
 use App\Http\Requests\OrderRequest;
 use App\Traits\ResponseAPI;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderNotificationMail;
-use App\Models\{Offer, User};
+use App\Mail\{OrderNotificationMail, OrderConfirmationMail};
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -40,6 +39,7 @@ class OrderController extends Controller
 
         if($response->data->sendNotificationMail === true) {
             Mail::to($response->data->talentEmail)->send(new OrderNotificationMail($response->data->deadline));
+            Mail::to($response->data->purchaserEmail)->send(new OrderConfirmationMail());
         }
 
         return $this->success($response->data);
