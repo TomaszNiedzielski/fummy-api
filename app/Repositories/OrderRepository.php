@@ -8,6 +8,7 @@ use App\Models\{Order};
 use DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class OrderRepository implements OrderInterface
 {
@@ -99,31 +100,72 @@ class OrderRepository implements OrderInterface
             'mode' => 'payment',
         ]);
 
+        // save session id
+        Order::find($orderId)->update(['session_id' => $session->id]);
+
         return $session->url;
     }
 
     public function verifyPurchaseStatus(string $purchaseKey) {
         $order = Order::where('purchase_key', $purchaseKey)->first();
         
-        if($order->id && !$order->is_paid) {
-            $deadlineIn = $order->offer->user->is_24_hours_delivery_on ? '+1 day' : '+7 days';
-
-            $order->is_paid = true;
-            $order->deadline = date('Y-m-d H:i:s', strtotime($deadlineIn));
-            $order->save();
-
-            /* Payment has been completed. Notify user about new order. */
-            $sendNotificationMail = true;
-        } else {
-            $sendNotificationMail = false;
+        if(!$order->id) {
+            return (object) ['code' => 500];
         }
 
         return (object) ['data' => (object) [
             'status' => $order->is_paid ? 'paid' : 'unpaid',
-            'sendNotificationMail' => $sendNotificationMail,
-            'talentEmail' => $order->offer->user->email,
-            'purchaserEmail' => $order->purchaser_email,
             'deadline' => $order->offer->user->is_24_hours_delivery_on ? '1 day' : '7 days'
-        ]];
+        ], 'code' => 200];
+    }
+
+    public function completeOrderWithWebhook(Request $request) {
+        $endpointSecret = \Config::get('constans.stripe_webhook_key');
+        $payload = @file_get_contents('php://input');
+        $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+
+        $event = null;
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sigHeader, $endpointSecret
+            );
+        } catch(\UnexpectedValueException $e) {
+            // Invalid payload.
+            return (object) ['code' => 400];
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid Signature.
+            return (object) ['code' => 400];
+        }
+
+        if($event->type === 'account.application.deauthorized') {
+            $application = $event->data->object;
+            $connectedAccountId = $event->account;
+            $this->handleDeauthorization($connectedAccountId, $application);
+        }
+
+        if($event->type === 'checkout.session.completed') {
+            $order = Order::where('session_id', $event->data->object->id)->first();
+
+            $deadlineIn = $order->offer->user->is_24_hours_delivery_on ? '+1 day' : '+7 days';
+
+            Order::where('session_id', $event->data->object->id)
+                ->update([
+                    'is_paid' => true,
+                    'deadline' => date('Y-m-d H:i:s', strtotime($deadlineIn))
+                ]);
+
+            return (object) ['code' => 200, 'data' => (object) [
+                'talentEmail' => $order->offer->user->email,
+                'purchaserEmail' => $order->purchaser_email,
+                'deadline' => $order->offer->user->is_24_hours_delivery_on ? '1 day' : '7 days'
+            ]];
+        }
+    }
+
+    private function handleDeauthorization($connectedAccountId, $application) {
+        // Clean up account state.
+        Log::info('Connected account ID: ' . $connectedAccountId);
+        Log::info($application);
     }
 }

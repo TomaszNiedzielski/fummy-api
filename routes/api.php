@@ -70,6 +70,8 @@ Route::group(['middleware' => ['api', 'cors']], function() {
     Route::get('orders', [OrderController::class, 'getOrders']);
     Route::post('orders/purchase/verify-status', [OrderController::class, 'verifyPurchaseStatus']);
 
+    Route::post('webhook', [OrderController::class, 'completeOrderWithWebhook']);
+
     Route::get('incomes/history', [IncomeController::class, 'getIncomesHistory']);
     Route::get('incomes', [IncomeController::class, 'getIncome']);
 
