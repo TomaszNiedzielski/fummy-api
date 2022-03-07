@@ -19,7 +19,8 @@ use App\Http\Controllers\{
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
-    AdminUsersController
+    AdminUsersController,
+    AdminController,
 };
 
 /*
@@ -88,13 +89,19 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::get('notifications', [NotificationController::class, 'getNotifications']);
     Route::post('notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
-});
 
-Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {
-    Route::post('register', [AdminAuthController::class, 'register']);
-    Route::post('login', [AdminAuthController::class, 'login']);
-    
-    Route::group(['prefix' => 'users/load'], function() {
-        Route::post('all', [AdminUsersController::class, 'loadAllUsers']);
+    Route::prefix('admin')->group(function() {
+        Route::get('users', [AdminController::class, 'getAllUsers']);
+        Route::post('users/{id}/verify', [AdminController::class, 'verifyUser']);
+        Route::delete('users/{id}', [AdminController::class, 'deleteUser']);
     });
 });
+
+// Route::group(['middleware' => ['assign.guard:admins', 'cors'], 'prefix' => 'admin'], function() {
+//     Route::post('register', [AdminAuthController::class, 'register']);
+//     Route::post('login', [AdminAuthController::class, 'login']);
+    
+//     Route::group(['prefix' => 'users/load'], function() {
+//         Route::post('all', [AdminUsersController::class, 'loadAllUsers']);
+//     });
+// });
