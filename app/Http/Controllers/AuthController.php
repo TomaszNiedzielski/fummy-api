@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
@@ -57,6 +58,8 @@ class AuthController extends Controller
             'nick' => $user->nick,
             'token' => $token
         ];
+
+        OrderRepository::makeWelcomeOrder();
 
         // send verification email
         if(\Config::get('constans.app_env') === 'production') {

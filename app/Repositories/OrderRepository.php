@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\OrderInterface;
 use App\Http\Requests\OrderRequest;
-use App\Models\{Order};
+use App\Models\{Offer, Order};
 use DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -167,5 +167,28 @@ class OrderRepository implements OrderInterface
         // Clean up account state.
         Log::info('Connected account ID: ' . $connectedAccountId);
         Log::info($application);
+    }
+
+    public static function makeWelcomeOrder() {
+        // create welcome offer for this user
+        $offer = Offer::create([
+            'user_id' => auth()->user()->id,
+            'title' => 'Video na przywitanie.',
+            'description' => '',
+            'price' => 100,
+            'currency' => 'PLN',
+            'is_removed' => 1
+        ]);
+        
+        Order::create([
+            'offer_id' => $offer->id,
+            'purchaser_name' => 'Fummy',
+            'purchaser_email' => env('MAIL_FROM_ADDRESS'),
+            'instructions' => 'Nagraj video powitalne, na którym użyjesz nazwy serwisu i zaprosisz swoich fanów do zakupów.',
+            'is_private' => 0,
+            'is_paid' => 1,
+            'purchase_key' => Str::random(60),
+            'deadline' => date('Y-m-d H:i:s', strtotime('+7 days'))
+        ]);
     }
 }
