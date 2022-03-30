@@ -96,4 +96,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.
 	Route::get('users', [AdminController::class, 'getAllUsers']);
     Route::post('users/{id}/verify', [AdminController::class, 'verifyUser']);
     Route::delete('users/{id}', [AdminController::class, 'deleteUser']);
+    Route::get('payouts', [AdminController::class, 'getPayouts']);
 });

@@ -14,4 +14,8 @@ class BankAccount extends Model
         'number',
         'holder_name'
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

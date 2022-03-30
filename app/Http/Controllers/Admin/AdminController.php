@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payout;
 use App\Models\User;
-use App\Traits\ResponseAPI;
+use App\Traits\{JSONCamelize, ResponseAPI};
 use DB;
 
 class AdminController extends Controller
 {
-    use ResponseAPI;
+    use ResponseAPI, JSONCamelize;
 
     public function getAllUsers() {
         $users = DB::table('users')
@@ -36,5 +37,21 @@ class AdminController extends Controller
         User::where('id', $id)->delete();
 
         return $this->success();
+    }
+
+    public function getPayouts() {
+        $payouts = Payout::with(['user' => function ($query) {
+            $query->select('id', 'nick', 'full_name', 'email', 'avatar')
+            ->with(['bankAccount' => function ($query) {
+                $query->select('user_id', 'number', 'holder_name')
+                ->where('is_removed', false);
+            }]);
+        }])
+        ->select('id', 'amount', 'is_complete', 'created_at', 'is_complete', 'user_id')
+        ->get();
+
+        $payouts = $this->toCamelCase($payouts);
+
+        return $this->success($payouts);
     }
 }
