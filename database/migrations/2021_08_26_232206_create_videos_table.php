@@ -15,10 +15,10 @@ class CreateVideosTable extends Migration
     {
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name')->unique();
             $table->string('thumbnail')->unique();
-            $table->integer('order_id')->unique();
+            $table->foreignId('order_id')->unique()->constrained();
             $table->boolean('processing_complete')->default(false);
             $table->timestamps();
         });
