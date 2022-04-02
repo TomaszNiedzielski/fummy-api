@@ -183,7 +183,7 @@ class OrderRepository implements OrderInterface
         Order::create([
             'offer_id' => $offer->id,
             'purchaser_name' => 'Fummy',
-            'purchaser_email' => env('MAIL_FROM_ADDRESS'),
+            'purchaser_email' => \Config::get('constans.mail_from_address'),
             'instructions' => 'Nagraj video powitalne, na którym użyjesz nazwy serwisu i zaprosisz swoich fanów do zakupów.',
             'is_private' => 0,
             'is_paid' => 1,

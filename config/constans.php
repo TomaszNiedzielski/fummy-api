@@ -8,4 +8,5 @@ return [
     'commission_if_delivery_in_24h' => env('COMMISSION_IF_DELIVERY_IN_24H', 0.15),
     'stripe_secret' => env('STRIPE_SECRET'),
     'stripe_webhook_key' => env('STRIPE_WEBHOOK_KEY'),
+    'mail_from_address' => env('MAIL_FROM_ADDRESS'),
 ];
