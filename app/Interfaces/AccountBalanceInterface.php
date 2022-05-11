@@ -9,15 +9,15 @@ interface AccountBalanceInterface
      * 
      * @method  api/account-balance/get POST
      */
-    public function getAccountBalance(): float;
+    public function getAccountBalance(): string;
 
     /**
      * Get income
      */
-    public function getIncome(): float;
+    public function getIncome(): string;
 
     /**
      * Get payouts
      */
-    public function getPayouts(): float;
+    public function getPayouts(): string;
 }

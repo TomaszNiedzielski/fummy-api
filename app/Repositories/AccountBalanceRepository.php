@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Interfaces\AccountBalanceInterface;
@@ -8,15 +10,21 @@ use App\Models\Payout;
 
 class AccountBalanceRepository implements AccountBalanceInterface
 {
-    public function getAccountBalance(): float {
-        return $this->getIncome() - $this->getPayouts();
+    public function getAccountBalance(): string {
+        $accountBalance = $this->getIncome() - $this->getPayouts();
+
+        return strval($accountBalance);
     }
 
-    public function getIncome(): float {
-        return Income::where('user_id', auth()->user()->id)->sum('net_amount');
+    public function getIncome(): string {
+        $income = Income::where('user_id', auth()->user()->id)->sum('net_amount');
+        
+        return strval($income);
     }
 
-    public function getPayouts(): float {
-        return Payout::where(['user_id' => auth()->user()->id, 'is_complete' => true])->sum('amount');
+    public function getPayouts(): string {
+        $payout = Payout::where(['user_id' => auth()->user()->id, 'is_complete' => true])->sum('amount');
+    
+        return strval($payout);
     }
 }
