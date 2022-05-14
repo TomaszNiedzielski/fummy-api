@@ -54,4 +54,10 @@ class AdminController extends Controller
 
         return $this->success($payouts);
     }
+
+    public function confirmPayout($id) {
+        Payout::where('id', $id)->update(['is_complete' => true]);
+
+        return $this->success();
+    }
 }
