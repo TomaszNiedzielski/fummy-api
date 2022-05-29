@@ -13,9 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(96)->create();
-        \App\Models\Offer::factory(96)->create();
-        \App\Models\Video::factory(990)->create();
-        \App\Models\Order::factory(990)->create();
+        \App\Models\User::factory(300)->create()->each(function ($user) {
+            $offers = \App\Models\Offer::factory(3)->make();
+            
+            $user->offers()->save($offers[0]);
+            $user->offers()->save($offers[1]);
+            $user->offers()->save($offers[2]);
+        });
+
+        \App\Models\Order::factory(890)->create();
+        \App\Models\Order::factory(890)->create();
+        \App\Models\Order::factory(890)->create();
+        \App\Models\Video::factory(2000)->create();
+        \App\Models\Review::factory(1500)->create();
     }
 }

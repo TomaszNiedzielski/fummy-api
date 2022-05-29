@@ -22,6 +22,7 @@ class UserFactory extends Factory
     public function definition()
     {
         $firstName = $this->faker->firstName();
+        $nick = str_replace('.', '', $this->faker->userName);
 
         $socials = (object) [
             'instagram' => (object) [
@@ -43,7 +44,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => bcrypt('qwerty123'),
-            'nick' => $this->faker->userName,
+            'nick' => $nick,
             'bio' => $this->faker->text(),
             'socials' => json_encode($socials),
             'avatar' => 'https://i.pravatar.cc/500?'.$this->faker->randomNumber(5),

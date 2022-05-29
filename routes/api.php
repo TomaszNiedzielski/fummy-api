@@ -16,6 +16,7 @@ use App\Http\Controllers\{
     AccountBalanceController,
     MailingAddressController,
     NotificationController,
+    ReviewController,
 };
 use App\Http\Controllers\Admin\{
     AdminAuthController,
@@ -88,6 +89,10 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::get('notifications', [NotificationController::class, 'getNotifications']);
     Route::post('notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
+
+    Route::post('reviews/check-key', [ReviewController::class, 'checkKey']);
+    Route::post('reviews', [ReviewController::class, 'saveReview']);
+    Route::get('reviews', [ReviewController::class, 'getReviews']);
 });
 
 Route::post('admin/login', [AdminAuthController::class, 'login']);

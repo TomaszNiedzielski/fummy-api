@@ -13,9 +13,10 @@ use FFMpeg\Filters\Video\VideoFilters;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VideoMail;
-use App\Models\{Video, Income, Order};
+use App\Models\{Video, Income, Order, Review};
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use Illuminate\Support\Str;
 
 class VideoProcessingJob implements ShouldQueue
 {
@@ -47,6 +48,7 @@ class VideoProcessingJob implements ShouldQueue
         $this->updateVideoAsComplete();
         $this->sendEmailToPurchaser();
         $this->createIncome();
+        $this->createReviewSlot();
     }
 
     private function resizeVideo() {
@@ -116,9 +118,17 @@ class VideoProcessingJob implements ShouldQueue
         ]);
     }
 
+    private function createReviewSlot() {
+        Review::create([
+            'video_id' => $this->video->id,
+            'access_key' => Str::random(60)
+        ]);
+    }
+
     public function failed(Throwable $exception) {
         Video::find($this->video->id)->delete();
         Income::where('order_id', $this->video->order_id)->delete();
+        Review::where('video_id', $this->video->id)->delete();
 
         Log::error("Job video processing fail. $exception");
         Log::error("failed video id: ".$this->video->id.", order_id: ".$this->video->order_id);
