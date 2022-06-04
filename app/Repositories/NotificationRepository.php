@@ -29,7 +29,8 @@ class NotificationRepository implements NotificationInterface
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
             ->where([
                 'offers.user_id' => auth()->user()->id,
-                'orders.is_read' => 0
+                'orders.is_read' => 0,
+                'orders.is_paid' => 1,
             ])
             ->update(['orders.is_read' => 1]);
     }
