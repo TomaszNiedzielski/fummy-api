@@ -9,7 +9,8 @@ use DB;
 
 class IncomeRepository extends AccountBalanceRepository implements IncomeInterface
 {
-    public function getIncomesHistory(): Collection {
+    public function getIncomesHistory(): Collection
+    {
         $incomesHistory = DB::table('incomes')
             ->where('incomes.user_id', auth()->user()->id)
             ->join('orders', 'orders.id', '=', 'incomes.order_id')

@@ -15,10 +15,11 @@ class UserRepository implements UserInterface
 {
     use SocialsValidator;
 
-    public function getVerifiedUsers() {
+    public function getVerifiedUsers()
+    {
         $users = DB::table('users')
             ->where('is_verified', true)
-            ->join('offers', function($join) {
+            ->join('offers', function ($join) {
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })
@@ -34,7 +35,7 @@ class UserRepository implements UserInterface
             ->get();
 
         $updatedUsers = array();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $user->prices = (object) [
                 'from' => $user->priceFrom,
                 'currency' => $user->currency
@@ -47,7 +48,8 @@ class UserRepository implements UserInterface
         return $updatedUsers;
     }
 
-    public function getUserDetails(Request $request, string $nick = null) {
+    public function getUserDetails(Request $request, string $nick = null)
+    {
         $userDetails = User::select(
             'full_name as fullName',
             'email_verified_at as mailVerifiedAt',
@@ -60,19 +62,19 @@ class UserRepository implements UserInterface
             'is_24_hours_delivery_on as is24HoursDeliveryOn'
         );
 
-        if(isset($nick) && $nick !== null) {
+        if (isset($nick) && $nick !== null) {
             $userDetails = $userDetails->where('nick', $nick)->first();
         } else {
             $userDetails = $userDetails->where('id', auth()->user()->id)->first();
         }
 
-        if(auth()->check()) {
+        if (auth()->check()) {
             $userDetails->isDashboard = $userDetails->nick === auth()->user()->nick;
         } else {
             $userDetails->isDashboard = false;
         }
 
-        if(!$userDetails) {
+        if (!$userDetails) {
             return (object) ['code' => 404, 'message' => 'Użytkownika nie znaleziono.'];
         }
 
@@ -84,8 +86,9 @@ class UserRepository implements UserInterface
         return (object) ['code' => 200, 'data' => $userDetails];
     }
 
-    public function updateUserDetails(UserDetailsRequest $request) {
-        if($this->validate($request->socials) === false) {
+    public function updateUserDetails(UserDetailsRequest $request)
+    {
+        if ($this->validate($request->socials) === false) {
             return (object) ['code' => 500];
         }
 
@@ -96,7 +99,7 @@ class UserRepository implements UserInterface
             'socials' => $request->socials ? $request->socials : "{}",
         ];
 
-        if($request->hasFile('avatar')) {
+        if ($request->hasFile('avatar')) {
             $updatesArray['avatar'] = $this->moveAvatarToStorage($request->file('avatar'));
         }
 
@@ -107,22 +110,25 @@ class UserRepository implements UserInterface
         return (object) ['code' => 200];
     }
 
-    protected function moveAvatarToStorage($image) {
+    protected function moveAvatarToStorage($image)
+    {
         $extension = $image->guessExtension();
         $fileName = Str::random(30).'.'.$extension;
 
-        Image::make($image)->resize(600, 600, function($constraint) {
+        Image::make($image)->resize(600, 600, function ($constraint) {
 		    $constraint->aspectRatio();
 		})->save(public_path('storage/avatars/'.$fileName));
 
         return $fileName;
     }
 
-    public function updateActivityStatus(Request $request) {
+    public function updateActivityStatus(Request $request)
+    {
         User::find(auth()->user()->id)->update(['is_active' => $request->isActive]);
     }
 
-    public function updateDeliveryTimeStatus(Request $request) {
+    public function updateDeliveryTimeStatus(Request $request)
+    {
         User::find(auth()->user()->id)->update(['is_24_hours_delivery_on' => $request->is24HoursDeliveryOn]);
     }
 }

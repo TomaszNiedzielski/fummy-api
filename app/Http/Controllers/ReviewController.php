@@ -13,27 +13,31 @@ class ReviewController extends Controller
 
     protected $reviewInterface;
 
-    public function __construct(ReviewInterface $reviewInterface) {
+    public function __construct(ReviewInterface $reviewInterface)
+    {
         $this->reviewInterface = $reviewInterface;
     }
 
-    public function checkKey(Request $request) {
+    public function checkKey(Request $request)
+    {
         $response = $this->reviewInterface->checkKey($request->key);
     
-        if($response->code === 200) {
+        if ($response->code === 200) {
             return $this->success($response->data);
         }
 
         return $this->error($response->message, null, 401);
     }
 
-    public function saveReview(ReviewRequest $request) {
+    public function saveReview(ReviewRequest $request)
+    {
         $this->reviewInterface->saveReview($request);
         
         return $this->success();
     }
 
-    public function getReviews(Request $request) {
+    public function getReviews(Request $request)
+    {
         $userNick = $request->query('user_nick');
         $response = $this->reviewInterface->getReviews($userNick);
 

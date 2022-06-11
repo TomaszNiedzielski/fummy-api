@@ -13,11 +13,13 @@ class AdminUsersController extends Controller
 
     protected $adminUsersInterface;
 
-    public function __construct(AdminUsersInterface $adminUsersInterface) {
+    public function __construct(AdminUsersInterface $adminUsersInterface)
+    {
         $this->adminUsersInterface = $adminUsersInterface;
     }
 
-    public function loadAllUsers() {
+    public function loadAllUsers()
+    {
         $response = $this->adminUsersInterface->loadAllUsers();
 
         return $this->success($response);

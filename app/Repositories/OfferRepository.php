@@ -9,13 +9,14 @@ use DB;
 
 class OfferRepository implements OfferInterface
 {
-    public function saveOffers(OfferRequest $request) {
+    public function saveOffers(OfferRequest $request)
+    {
         $newOffers = $request->offers;
 
         $oldOffersRes = $this->getOffers(auth()->user()->nick);
         $oldOffers = $oldOffersRes->data;
 
-        foreach($newOffers as $newOffer) {
+        foreach ($newOffers as $newOffer) {
             $offerToSave = [
                 'user_id' => auth()->user()->id,
                 'title' => $newOffer['title'],
@@ -24,7 +25,7 @@ class OfferRepository implements OfferInterface
                 'currency' => $newOffer['currency']
             ];
 
-            if(!empty($newOffer['id'])) {
+            if (!empty($newOffer['id'])) {
                 /**
                  * Item is old because has ID
                  * 
@@ -37,14 +38,14 @@ class OfferRepository implements OfferInterface
                     'is_removed' => false
                 ])->first();
 
-                if(!empty($matchingOffer)) {
+                if (!empty($matchingOffer)) {
                     /**
                      * If item was returned it means that the new one is the same that has been existing in database
                      * 
                      * So we need to check if title or price has been edited
                      */
 
-                    if($matchingOffer->title === $newOffer['title'] && $matchingOffer->price === $newOffer['price'] && $matchingOffer->description === $newOffer['description']) {
+                    if ($matchingOffer->title === $newOffer['title'] && $matchingOffer->price === $newOffer['price'] && $matchingOffer->description === $newOffer['description']) {
                         // It means that this offer was not edited and we can go to check the next one
                         continue;
                     }
@@ -78,16 +79,16 @@ class OfferRepository implements OfferInterface
          * this old version element needs to be removed
          */
 
-        foreach($oldOffers as $oldOffer) {
+        foreach ($oldOffers as $oldOffer) {
             $isSet = false;
 
-            foreach($newOffers as $newOffer) {
-                if($newOffer['id'] === $oldOffer->id) {
+            foreach ($newOffers as $newOffer) {
+                if ($newOffer['id'] === $oldOffer->id) {
                     $isSet = true;
                 }
             }
             
-            if(!$isSet) {
+            if (!$isSet) {
                 /**
                  * The old one is not set in the new set so needs to be removed
                  */
@@ -104,14 +105,15 @@ class OfferRepository implements OfferInterface
         return $this->getOffers(auth()->user()->nick);
     }
 
-    public function getOffers(string $userNick) {
-        if(!$userNick) {
+    public function getOffers(string $userNick)
+    {
+        if (!$userNick) {
             return (object) ['code' => 400, 'message' => 'Brak informacji o użytkowniku.'];
         }
 
         $offers = DB::table('users')
             ->where('users.nick', $userNick)
-            ->join('offers', function($join) {
+            ->join('offers', function ($join) {
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })

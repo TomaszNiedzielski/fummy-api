@@ -34,7 +34,7 @@ class VerifyUserCommand extends Command
             ->where('nick', $nick)
             ->update(['is_verified' => true]);
 
-        if($updated === 0) {
+        if ($updated === 0) {
             return $this->error('User has been not found.');
         }
 

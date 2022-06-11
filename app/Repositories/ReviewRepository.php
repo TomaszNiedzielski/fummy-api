@@ -8,10 +8,11 @@ use DB;
 
 class ReviewRepository implements ReviewInterface
 {
-    public function checkKey(string $key) {
+    public function checkKey(string $key)
+    {
         $review = Review::where('access_key', $key)->first();
 
-        if(isset($review)) {
+        if (isset($review)) {
             return (object) [
                 'code' => 200,
                 'data' => (object) [
@@ -23,7 +24,8 @@ class ReviewRepository implements ReviewInterface
         return (object) ['code' => '500', 'message' => 'Podany kod nie istnieje!'];
     }
 
-    public function saveReview(object $review) {
+    public function saveReview(object $review)
+    {
         Review::where('access_key', $review->key)
             ->update([
                 'rate' => $review->rate,
@@ -32,7 +34,8 @@ class ReviewRepository implements ReviewInterface
             ]);
     }
 
-    public function getReviews(string $userNick) {
+    public function getReviews(string $userNick)
+    {
         $reviews = DB::table('reviews')
             ->where('rate', '!=', null)
             ->join('videos', 'videos.id', '=', 'reviews.video_id')

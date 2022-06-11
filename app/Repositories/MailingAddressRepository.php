@@ -8,7 +8,8 @@ use App\Models\MailingAddress;
 
 class MailingAddressRepository implements MailingAddressInterface
 {
-    public function addEmail(MailingAddressRequest $request) {
+    public function addEmail(MailingAddressRequest $request)
+    {
         MailingAddress::create([
             'email' => $request->email
         ]);

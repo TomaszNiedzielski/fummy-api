@@ -5,11 +5,13 @@ use Illuminate\Support\Collection;
 
 trait JSONCamelize
 {
-    public function camelize(string $input, string $separator = '_') {
+    public function camelize(string $input, string $separator = '_')
+    {
         return str_replace($separator, '', lcfirst(ucwords($input, $separator)));
     }
     
-    public function toCamelCase(object | array $obj): object | array {
+    public function toCamelCase(object | array $obj): object | array
+    {
         $updatedObj = (object) [];
 
         if ($obj instanceof Collection) {

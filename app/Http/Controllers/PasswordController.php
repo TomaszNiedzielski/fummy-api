@@ -12,34 +12,38 @@ class PasswordController extends Controller
 
     protected $passwordInterface;
 
-    public function __construct(PasswordInterface $passwordInterface) {
+    public function __construct(PasswordInterface $passwordInterface)
+    {
         $this->passwordInterface = $passwordInterface;
     }
 
-    public function sendResetLink(Request $request) {
+    public function sendResetLink(Request $request)
+    {
         $response = $this->passwordInterface->sendResetLink($request);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error($response->message, null, $response->code);
         }
 
         return $this->success($response);
     }
 
-    public function reset(Request $request) {
+    public function reset(Request $request)
+    {
         $response = $this->passwordInterface->reset($request);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error($response->message, null, $response->code);
         }
 
         return $this->success($response->message);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $response = $this->passwordInterface->update($request);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error(null, $response->errors, $response->code);
         }
 

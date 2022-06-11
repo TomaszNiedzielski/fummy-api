@@ -9,7 +9,8 @@ use DB;
 
 class BankAccountRepository implements BankAccountInterface
 {
-    public function saveBankAccount(BankAccountRequest $request) {
+    public function saveBankAccount(BankAccountRequest $request)
+    {
         DB::transaction(function () use ($request) {
             BankAccount::where(['user_id' => auth()->user()->id, 'is_removed' => false])
                 ->update(['is_removed' => true]);
@@ -24,7 +25,8 @@ class BankAccountRepository implements BankAccountInterface
         return (object) ['code' => 200];
     }
 
-    public function getBankAccount() {
+    public function getBankAccount()
+    {
         return BankAccount::where(['user_id' => auth()->user()->id, 'is_removed' => false])
             ->select('number', 'holder_name as holderName')
             ->first();

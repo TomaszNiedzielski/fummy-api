@@ -40,7 +40,7 @@ class SendReviewLinkJob implements ShouldQueue
     {
         $reviewSlots = $this->getReviewSlots();
 
-        foreach($reviewSlots as $reviewSlot) {
+        foreach ($reviewSlots as $reviewSlot) {
             Log::info('Send review mail to ' . $reviewSlot->purchaserEmail);
 
             try {

@@ -11,13 +11,15 @@ class AccountBalanceController extends Controller
     
     protected $accountBalanceInterface;
 
-    public function __construct(AccountBalanceInterface $accountBalanceInterface) {
+    public function __construct(AccountBalanceInterface $accountBalanceInterface)
+    {
         $this->middleware('auth:api');
 
         $this->accountBalanceInterface = $accountBalanceInterface;
     }
 
-    public function getAccountBalance() {
+    public function getAccountBalance()
+    {
         $response = $this->accountBalanceInterface->getAccountBalance();
 
         return $this->success($response);

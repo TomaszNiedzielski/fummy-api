@@ -11,7 +11,8 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function offer() {
+    public function offer()
+    {
         return $this->belongsTo(Offer::class);
     }
 }

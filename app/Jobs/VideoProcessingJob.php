@@ -51,7 +51,8 @@ class VideoProcessingJob implements ShouldQueue
         $this->createReviewSlot();
     }
 
-    private function resizeVideo() {
+    private function resizeVideo()
+    {
         $newName = pathinfo($this->video->name, PATHINFO_FILENAME).'.mp4';
         FFMpeg::fromDisk('original_videos')
             ->open($this->video->name)
@@ -63,13 +64,14 @@ class VideoProcessingJob implements ShouldQueue
             ->inFormat(new \FFMpeg\Format\Video\X264)
             ->save($newName);
 
-        if(pathinfo($this->video->name, PATHINFO_EXTENSION) !== 'mp4') {
+        if (pathinfo($this->video->name, PATHINFO_EXTENSION) !== 'mp4') {
             Video::find($this->video->id)->update(['name' => $newName]);
             $this->video->name = $newName;
         }
     }
 
-    private function createThumbnail() {
+    private function createThumbnail()
+    {
         FFMpeg::fromDisk('videos')
             ->open($this->video->name)
             ->getFrameFromSeconds(1)
@@ -78,11 +80,13 @@ class VideoProcessingJob implements ShouldQueue
             ->save($this->video->thumbnail);
     }
 
-    private function updateVideoAsComplete() {
+    private function updateVideoAsComplete()
+    {
         Video::find($this->video->id)->update(['processing_complete' => true]);
     }
 
-    private function sendEmailToPurchaser() {
+    private function sendEmailToPurchaser()
+    {
         $purchaserEmail = DB::table('orders')
             ->where('id', $this->video->order_id)
             ->pluck('purchaser_email');
@@ -90,7 +94,8 @@ class VideoProcessingJob implements ShouldQueue
         Mail::to($purchaserEmail)->send(new VideoMail($this->video->name, $this->user->nick));
     }
 
-    private function createIncome() {
+    private function createIncome()
+    {
         $grossAmount = DB::table('orders')
             ->where('orders.id', $this->video->order_id)
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
@@ -103,7 +108,7 @@ class VideoProcessingJob implements ShouldQueue
 
         $commission = \Config::get('constans.commission');
         
-        if($createdAt->diffInDays($deadline) === 1) {
+        if ($createdAt->diffInDays($deadline) === 1) {
             $commission = \Config::get('constans.commission_if_delivery_in_24h');
         }
 
@@ -118,14 +123,16 @@ class VideoProcessingJob implements ShouldQueue
         ]);
     }
 
-    private function createReviewSlot() {
+    private function createReviewSlot()
+    {
         Review::create([
             'video_id' => $this->video->id,
             'access_key' => Str::random(60)
         ]);
     }
 
-    public function failed(Throwable $exception) {
+    public function failed(Throwable $exception)
+    {
         Video::find($this->video->id)->delete();
         Income::where('order_id', $this->video->order_id)->delete();
         Review::where('video_id', $this->video->id)->delete();

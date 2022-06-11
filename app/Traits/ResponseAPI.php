@@ -4,8 +4,9 @@ namespace App\Traits;
 
 trait ResponseAPI
 {
-    public function coreResponse($data, $message, $statusCode, $isSuccess = true) {
-        if($isSuccess) {
+    public function coreResponse($data, $message, $statusCode, $isSuccess = true)
+    {
+        if ($isSuccess) {
             return response()->json([
                 'message' => $message,
                 'code' => $statusCode,
@@ -20,11 +21,13 @@ trait ResponseAPI
         }
     }
     
-    public function success($data = null, $message = null, $statusCode = 200) {
+    public function success($data = null, $message = null, $statusCode = 200)
+    {
         return $this->coreResponse($data, $message, $statusCode);
     }
 
-    public function error($message = null, $errors = null, $statusCode = 500) {
+    public function error($message = null, $errors = null, $statusCode = 500)
+    {
         return $this->coreResponse($errors, $message, $statusCode, false);
     }
 }

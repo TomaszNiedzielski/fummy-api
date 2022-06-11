@@ -12,7 +12,8 @@ use App\Mail\VerifyMail;
 
 class MailRepository implements MailInterface
 {
-    public function confirmVerification(Request $request) {
+    public function confirmVerification(Request $request)
+    {
         $key = DB::table('mail_verification_keys')
             ->where('user_id', $request->userId)
             ->orderBy('created_at', 'desc')
@@ -20,7 +21,7 @@ class MailRepository implements MailInterface
 
         $exist = $key->value === $request->key;
 
-        if($exist) {
+        if ($exist) {
             DB::table('users')
                 ->where('id', $request->userId)
                 ->update([
@@ -35,10 +36,11 @@ class MailRepository implements MailInterface
         return $exist;
     }
 
-    public function sendVerificationMail() {
+    public function sendVerificationMail()
+    {
         $user = auth()->user();
 
-        if($user->email_verified_at) {
+        if ($user->email_verified_at) {
             return (object) ['code' => 429, 'message' => 'Twój adres email jest już zweryfikowany.'];
         }
 
@@ -47,7 +49,7 @@ class MailRepository implements MailInterface
             ->where('created_at', '>', date('Y-m-d H:i:s', strtotime('-1 days')))
             ->get();
 
-        if(count($keysFromLastDay) >= 3) {
+        if (count($keysFromLastDay) >= 3) {
             return (object) ['code' => 429, 'message' => 'Limit weryfikacyjnych wiadomości e-mail został wyczerpany. Spróbuj ponownie jutro.'];
         }
 
@@ -58,7 +60,8 @@ class MailRepository implements MailInterface
         return (object) ['code' => 200, 'message' => 'E-mail został wysłany.'];
     }
 
-    private function createVerificationKey(int $user_id) {
+    private function createVerificationKey(int $user_id)
+    {
         $key = new MailVerificationKey();
         $key->user_id = $user_id;
         $key->value = Str::random(40);

@@ -14,7 +14,8 @@ class AdminAuthController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth:admins', ['except' => ['login', 'register']]);
     }
 
@@ -23,7 +24,8 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login() {
+    public function login()
+    {
         $credentials = request(['email', 'password']);
 
         if (!$token = auth('admins')->attempt($credentials)) {
@@ -38,7 +40,8 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout() {
+    public function logout()
+    {
         auth('admins')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -49,7 +52,8 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh() {
+    public function refresh()
+    {
         return $this->respondWithToken(auth('admins')->refresh());
     }
 
@@ -60,7 +64,8 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token) {
+    protected function respondWithToken($token)
+    {
         return response()->json([
             'code' => 200,
             'token' => $token,

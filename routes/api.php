@@ -34,14 +34,14 @@ use App\Http\Controllers\Admin\{
 |
 */
 
-Route::group(['middleware' => ['api', 'cors']], function() {
-    Route::prefix('auth')->group(function() {
+Route::group(['middleware' => ['api', 'cors']], function () {
+    Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login'])->name('login');
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
-    Route::prefix('users')->group(function() {
+    Route::prefix('users')->group(function () {
         Route::get('verified', [UserController::class, 'getVerifiedUsers']);
         Route::get('{nick}', [UserController::class, 'getUserDetails'])->where('nick', '[a-z0-9_]{3,}');
         Route::get('me', [UserController::class, 'getUserDetails']);
@@ -52,7 +52,7 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
     Route::get('search-results', [SearchController::class, 'search']);
 
-    Route::prefix('mail')->group(function() {
+    Route::prefix('mail')->group(function () {
         Route::post('verification-mail', [MailController::class, 'sendVerificationMail']);
         Route::post('confirm', [MailController::class, 'confirmVerification']);
     });
@@ -97,8 +97,8 @@ Route::group(['middleware' => ['api', 'cors']], function() {
 
 Route::post('admin/login', [AdminAuthController::class, 'login']);
 
-Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function() {
-	Route::get('users', [AdminController::class, 'getAllUsers']);
+Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
+    Route::get('users', [AdminController::class, 'getAllUsers']);
     Route::post('users/{id}/verify', [AdminController::class, 'verifyUser']);
     Route::delete('users/{id}', [AdminController::class, 'deleteUser']);
     Route::get('payouts', [AdminController::class, 'getPayouts']);

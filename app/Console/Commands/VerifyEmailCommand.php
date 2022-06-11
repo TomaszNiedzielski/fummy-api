@@ -36,7 +36,7 @@ class VerifyEmailCommand extends Command
                 'email_verified_at' => date('Y-m-d H:i:s')
             ]);
 
-        if($updated === 0) {
+        if ($updated === 0) {
             return $this->error('User has been not found.');
         }
 

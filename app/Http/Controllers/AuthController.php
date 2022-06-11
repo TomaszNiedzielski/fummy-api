@@ -44,7 +44,8 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest $request) {
+    public function register(RegisterRequest $request)
+    {
         $user = new User;
         $user->full_name = $request->fullName;
         $user->email = $request->email;
@@ -62,7 +63,7 @@ class AuthController extends Controller
         OrderRepository::makeWelcomeOrder();
 
         // send verification email
-        if(\Config::get('constans.app_env') === 'production') {
+        if (\Config::get('constans.app_env') === 'production') {
             Route::dispatch(\Request::create('/api/mail/verification-mail', 'POST'));
         }
 
@@ -120,8 +121,8 @@ class AuthController extends Controller
         $nick = '';
         $fullNameExploded = explode(' ', $fullName);
 
-        foreach($fullNameExploded as $i=>$value) {
-            if($i < count($fullNameExploded)-1) {
+        foreach ($fullNameExploded as $i=>$value) {
+            if ($i < count($fullNameExploded)-1) {
                 $nick = $nick.$value.'-';
             } else {
                 $nick = $nick.$value;

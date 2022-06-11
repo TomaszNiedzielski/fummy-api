@@ -15,39 +15,44 @@ class OrderController extends Controller
 
     protected $orderInterface;
 
-    public function __construct(OrderInterface $orderInterface) {
+    public function __construct(OrderInterface $orderInterface)
+    {
         $this->middleware('auth:api', ['except' => ['makeOrders', 'verifyPurchaseStatus', 'completeOrderWithWebhook']]);
 
         $this->orderInterface = $orderInterface;
     }
 
-    public function makeOrders(OrderRequest $request) {
+    public function makeOrders(OrderRequest $request)
+    {
         $response = $this->orderInterface->makeOrders($request);
 
         return $this->success($response->data, $response->message);
     }
 
-    public function getOrders() {
+    public function getOrders()
+    {
         $response = $this->orderInterface->getOrders();
 
         return $this->success($response);
     }
 
-    public function verifyPurchaseStatus(Request $request) {
+    public function verifyPurchaseStatus(Request $request)
+    {
         $purchaseKey = $request->query('purchase_key');
         $response = $this->orderInterface->verifyPurchaseStatus($purchaseKey);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error();
         }
 
         return $this->success($response->data);
     }
 
-    public function completeOrderWithWebhook(Request $request) {
+    public function completeOrderWithWebhook(Request $request)
+    {
         $response = $this->orderInterface->completeOrderWithWebhook($request);
 
-        if($response->code === 200) {
+        if ($response->code === 200) {
             Mail::to($response->data->talentEmail)->send(new OrderNotificationMail($response->data->deadline));
             Mail::to($response->data->purchaserEmail)->send(new OrderConfirmationMail());
         }

@@ -13,12 +13,13 @@ use DB;
 
 class PasswordRepository implements PasswordInterface
 {
-    public function sendResetLink(Request $request) {
+    public function sendResetLink(Request $request)
+    {
         $emailExists = DB::table('users')
             ->where('email', $request->email)
             ->exists();
         
-        if(!$emailExists) {
+        if (!$emailExists) {
             return (object) ['code' => 404, 'message' => 'Nie znaleziono użytkownika z podanym adresem e-mail.'];
         }
 
@@ -27,7 +28,7 @@ class PasswordRepository implements PasswordInterface
             ->where('created_at', '>', date('Y-m-d H:i:s', strtotime('-1 days')))
             ->get();
 
-        if(count($keysFromLastDay) >= 3) {
+        if (count($keysFromLastDay) >= 3) {
             return (object) ['code' => 429, 'message' => 'Limit wysłanych linków do resetu hasła został wykorzystany. Spróbuj ponownie jutro.'];
         }
 
@@ -38,7 +39,8 @@ class PasswordRepository implements PasswordInterface
         return (object) ['code' => 200, 'message' => 'E-mail z linkiem do resetu hasła został wysłany na podany adres.'];
     }
 
-    private function createPasswordResetKey(string $email) {
+    private function createPasswordResetKey(string $email)
+    {
         $key = Str::random(40);
 
         DB::table('password_reset_keys')
@@ -52,13 +54,14 @@ class PasswordRepository implements PasswordInterface
         return $key;
     }
 
-    public function reset(Request $request) {
+    public function reset(Request $request)
+    {
         $key = DB::table('password_reset_keys')
             ->where('value', $request->key)
             ->where('expires_at', '>', date('Y-m-d H:i:s'))
             ->first();
 
-        if(!isset($key)) {
+        if (!isset($key)) {
             return (object) ['code' => 410, 'message' => 'Ten link wygasł lub token jest niepoprawny.'];
         }
 
@@ -71,10 +74,11 @@ class PasswordRepository implements PasswordInterface
         return (object) ['code' => 200, 'message' => 'Hasło zostało zmienione.'];
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $hash = User::find(auth()->user()->id)->password;
 
-        if(! Hash::check($request->currentPassword, $hash)){
+        if (! Hash::check($request->currentPassword, $hash)){
             return (object) [
                 'code' => 400,
                 'errors' => (object) [

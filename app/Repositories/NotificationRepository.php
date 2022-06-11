@@ -7,13 +7,15 @@ use DB;
 
 class NotificationRepository implements NotificationInterface
 {
-    public function getNotifications() {
+    public function getNotifications()
+    {
         return (object) ['notifications' => (object) [
             'orders' => (object) ['number' => $this->countUnreadOrders()]
         ]];
     }
 
-    protected function countUnreadOrders() {
+    protected function countUnreadOrders()
+    {
         return DB::table('orders')
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
             ->where([
@@ -24,7 +26,8 @@ class NotificationRepository implements NotificationInterface
             ->count();
     }
 
-    public function markAsRead() {
+    public function markAsRead()
+    {
         DB::table('orders')
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
             ->where([

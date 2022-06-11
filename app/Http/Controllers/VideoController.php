@@ -14,14 +14,16 @@ class VideoController extends Controller
 
     protected $videoInterface;
 
-    public function __construct(VideoInterface $videoInterface) {
+    public function __construct(VideoInterface $videoInterface)
+    {
         $this->videoInterface = $videoInterface;
     }
 
-    public function uploadVideos(VideoRequest $request) {
+    public function uploadVideos(VideoRequest $request)
+    {
         $response = $this->videoInterface->uploadVideos($request);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error();
         }
 
@@ -30,10 +32,11 @@ class VideoController extends Controller
         return $this->success(null, $response->message); // Do poprawy kolejność
     }
 
-    public function getVideos(Request $request) {
+    public function getVideos(Request $request)
+    {
         $response = $this->videoInterface->getVideos($request);
 
-        if($response->code !== 200) {
+        if ($response->code !== 200) {
             return $this->error($response->message, null, $response->code);
         }
 

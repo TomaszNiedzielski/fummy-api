@@ -11,7 +11,8 @@ use Illuminate\Support\Str;
 
 class VideoRepository implements VideoInterface
 {
-    public function uploadVideos(VideoRequest $request) {
+    public function uploadVideos(VideoRequest $request)
+    {
         $video = $request->file('video');
         $extension = $video->guessExtension();
         $newVideoNameWithoutExt = Str::random(30);
@@ -28,20 +29,21 @@ class VideoRepository implements VideoInterface
         return (object) ['code' => 200, 'message' => 'Video zostało zapisane.', 'video' => $video];
     }
 
-    public function getVideos(Request $request) {
+    public function getVideos(Request $request)
+    {
         $userNick = $request->query('user_nick');
 
-        if(!$userNick) {
+        if (!$userNick) {
             return (object) ['code' => 400, 'message' => 'Brak informacji o użytkowniku.'];
         }
 
         $videos = DB::table('users')
             ->where('nick', $userNick)
-            ->join('videos', function($join) {
+            ->join('videos', function ($join) {
                 $join->on('videos.user_id', '=', 'users.id')
                 ->where('processing_complete', true);
             })
-            ->join('orders', function($join) {
+            ->join('orders', function ($join) {
                 $join->on('orders.id', '=', 'videos.order_id')
                 ->where('is_private', false);
             })

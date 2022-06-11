@@ -9,11 +9,13 @@ class MailingAddressController extends Controller
 {
     protected $mailingAddressInterface;
 
-    public function __construct(MailingAddressInterface $mailingAddressInterface) {
+    public function __construct(MailingAddressInterface $mailingAddressInterface)
+    {
         $this->mailingAddressInterface = $mailingAddressInterface;
     }
 
-    public function addEmail(MailingAddressRequest $request) {
+    public function addEmail(MailingAddressRequest $request)
+    {
         $this->mailingAddressInterface->addEmail($request);
     }
 }

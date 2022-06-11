@@ -7,7 +7,8 @@ use DB;
 
 class SearchRepository implements SearchInterface
 {
-    public function search(string $q) {
+    public function search(string $q)
+    {
         $results = DB::table('users')
             ->where([
                 ['full_name', 'like', '%'.$q.'%'],
@@ -17,7 +18,7 @@ class SearchRepository implements SearchInterface
                 ['users.nick', 'like', '%'.$q.'%'],
                 ['is_verified', '=', true]
             ])
-            ->join('offers', function($join) {
+            ->join('offers', function ($join) {
                 $join->on('offers.user_id', '=', 'users.id')
                 ->where('offers.is_removed', false);
             })

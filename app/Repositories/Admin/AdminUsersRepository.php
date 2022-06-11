@@ -7,7 +7,8 @@ use DB;
 
 class AdminUsersRepository implements AdminUsersInterface
 {
-    public function loadAllUsers() {
+    public function loadAllUsers()
+    {
         $users = DB::table('users')
             ->select('full_name', 'email', 'nick', 'bio', 'avatar', 'created_at')
             ->get();

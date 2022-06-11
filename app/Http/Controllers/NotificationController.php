@@ -11,17 +11,20 @@ class NotificationController extends Controller
 
     protected $notificationInterface;
 
-    public function __construct(NotificationInterface $notificationInterface) {
+    public function __construct(NotificationInterface $notificationInterface)
+    {
         $this->notificationInterface = $notificationInterface;
     }
 
-    public function getNotifications() {
+    public function getNotifications()
+    {
         $response = $this->notificationInterface->getNotifications();
 
         return $this->success($response);
     }
 
-    public function markAsRead() {
+    public function markAsRead()
+    {
         $this->notificationInterface->markAsRead();
     }
 }

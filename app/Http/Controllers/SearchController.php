@@ -12,11 +12,13 @@ class SearchController extends Controller
 
     protected $searchInterface;
 
-    public function __construct(SearchInterface $searchInterface) {
+    public function __construct(SearchInterface $searchInterface)
+    {
         $this->searchInterface = $searchInterface;
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $q = $request->query('q');
         $response = $this->searchInterface->search($q);
 

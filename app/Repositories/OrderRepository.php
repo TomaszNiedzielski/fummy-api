@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 
 class OrderRepository implements OrderInterface
 {
-    public function makeOrders(OrderRequest $request): object {
+    public function makeOrders(OrderRequest $request): object
+    {
         $order = Order::create([
             'offer_id' => $request->offerId,
             'purchaser_name' => $request->name,
@@ -27,7 +28,8 @@ class OrderRepository implements OrderInterface
         return (object) ['code' => 200, 'message' => 'Zamówienie zostało złożone.', 'data' => (object) ['paymentLink' => $paymentLink]];
     }
 
-    public function getOrders() {
+    public function getOrders()
+    {
         $orders = DB::table('offers')
             ->where([
                 'offers.user_id' => auth()->user()->id,
@@ -45,9 +47,9 @@ class OrderRepository implements OrderInterface
         $completed = array();
         $unrealized = array();
 
-        foreach($orders as $order) {
-            if(empty($order->videoName) || !$order->processingComplete) {
-                if($order->deadline < date('Y-m-d H:i:s')) {
+        foreach ($orders as $order) {
+            if (empty($order->videoName) || !$order->processingComplete) {
+                if ($order->deadline < date('Y-m-d H:i:s')) {
                     array_push($unrealized, $order);
                 } else {
                     array_push($current, $order);
@@ -60,7 +62,8 @@ class OrderRepository implements OrderInterface
         return (object) ['current' => $current, 'completed' => $completed, 'unrealized' => $unrealized];
     }
 
-    protected function getPaymentLink(int $orderId): string {
+    protected function getPaymentLink(int $orderId): string
+    {
         $orderInfo = DB::table('orders')
             ->where('orders.id', $orderId)
             ->join('offers', 'offers.id', '=', 'orders.offer_id')
@@ -106,10 +109,11 @@ class OrderRepository implements OrderInterface
         return $session->url;
     }
 
-    public function verifyPurchaseStatus(string $purchaseKey) {
+    public function verifyPurchaseStatus(string $purchaseKey)
+    {
         $order = Order::where('purchase_key', $purchaseKey)->first();
         
-        if(!$order->id) {
+        if (!$order->id) {
             return (object) ['code' => 500];
         }
 
@@ -119,7 +123,8 @@ class OrderRepository implements OrderInterface
         ], 'code' => 200];
     }
 
-    public function completeOrderWithWebhook(Request $request) {
+    public function completeOrderWithWebhook(Request $request)
+    {
         $endpointSecret = \Config::get('constans.stripe_webhook_key');
         $payload = @file_get_contents('php://input');
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
@@ -130,21 +135,21 @@ class OrderRepository implements OrderInterface
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sigHeader, $endpointSecret
             );
-        } catch(\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             // Invalid payload.
             return (object) ['code' => 400];
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid Signature.
             return (object) ['code' => 400];
         }
 
-        if($event->type === 'account.application.deauthorized') {
+        if ($event->type === 'account.application.deauthorized') {
             $application = $event->data->object;
             $connectedAccountId = $event->account;
             $this->handleDeauthorization($connectedAccountId, $application);
         }
 
-        if($event->type === 'checkout.session.completed') {
+        if ($event->type === 'checkout.session.completed') {
             $order = Order::where('session_id', $event->data->object->id)->first();
 
             $deadlineIn = $order->offer->user->is_24_hours_delivery_on ? '+1 day' : '+7 days';
@@ -163,13 +168,15 @@ class OrderRepository implements OrderInterface
         }
     }
 
-    private function handleDeauthorization($connectedAccountId, $application) {
+    private function handleDeauthorization($connectedAccountId, $application)
+    {
         // Clean up account state.
         Log::info('Connected account ID: ' . $connectedAccountId);
         Log::info($application);
     }
 
-    public static function makeWelcomeOrder() {
+    public static function makeWelcomeOrder()
+    {
         // create welcome offer for this user
         $offer = Offer::create([
             'user_id' => auth()->user()->id,

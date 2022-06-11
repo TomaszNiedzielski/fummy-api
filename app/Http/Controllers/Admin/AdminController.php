@@ -12,7 +12,8 @@ class AdminController extends Controller
 {
     use ResponseAPI, JSONCamelize;
 
-    public function getAllUsers() {
+    public function getAllUsers()
+    {
         $users = DB::table('users')
             ->select('users.id', 'full_name as fullName', 'email', 'nick', 'avatar', 'is_verified as isVerified', DB::raw('COUNT(orders.id) as ordersNumber'))
             ->where('users.id', '!=', 1)
@@ -27,19 +28,22 @@ class AdminController extends Controller
         return $this->success($users);
     }
 
-    public function verifyUser(int $id) {
+    public function verifyUser(int $id)
+    {
         User::where('id', $id)->update(['is_verified' => 1]);
 
         return $this->success();
     }
 
-    public function deleteUser(int $id) {
+    public function deleteUser(int $id)
+    {
         User::where('id', $id)->delete();
 
         return $this->success();
     }
 
-    public function getPayouts() {
+    public function getPayouts()
+    {
         $payouts = Payout::with(['user' => function ($query) {
             $query->select('id', 'nick', 'full_name', 'email', 'avatar')
             ->with(['bankAccount' => function ($query) {
@@ -55,7 +59,8 @@ class AdminController extends Controller
         return $this->success($payouts);
     }
 
-    public function confirmPayout($id) {
+    public function confirmPayout($id)
+    {
         Payout::where('id', $id)->update(['is_complete' => true]);
 
         return $this->success();

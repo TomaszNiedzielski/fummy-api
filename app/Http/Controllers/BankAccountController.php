@@ -12,19 +12,22 @@ class BankAccountController extends Controller
 
     protected $bankAccountInterface;
 
-    public function __construct(BankAccountInterface $bankAccountInterface) {
+    public function __construct(BankAccountInterface $bankAccountInterface)
+    {
         $this->middleware('auth:api');
 
         $this->bankAccountInterface = $bankAccountInterface;
     }
 
-    public function saveBankAccount(BankAccountRequest $request) {
+    public function saveBankAccount(BankAccountRequest $request)
+    {
         $this->bankAccountInterface->saveBankAccount($request);
 
         return $this->success();
     }
 
-    public function getBankAccount() {
+    public function getBankAccount()
+    {
         $response = $this->bankAccountInterface->getBankAccount();
 
         return $this->success($response);
