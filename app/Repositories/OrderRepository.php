@@ -16,8 +16,10 @@ class OrderRepository implements OrderInterface
     {
         $order = Order::create([
             'offer_id' => $request->offerId,
-            'purchaser_name' => $request->name,
+            'purchaser_name' => $request->forWhom === 'me' ? $request->name : $request->fromWhoName,
             'purchaser_email' => $request->email,
+            'for_whom' => $request->forWhom === 'me' ? null : $request->forWhomName,
+            'occasion' => $request->occasion,
             'instructions' => $request->instructions,
             'is_private' => $request->isPrivate,
             'purchase_key' => Str::random(60),
@@ -37,8 +39,40 @@ class OrderRepository implements OrderInterface
             ])
             ->join('orders', 'orders.offer_id', '=', 'offers.id')
             ->leftJoin('videos', 'videos.order_id', '=', 'orders.id')
-            ->select('orders.id', 'offers.title', 'offers.description', 'orders.instructions', 'orders.is_private as isPrivate', 'videos.name as videoName', 'videos.thumbnail', 'videos.processing_complete as processingComplete', 'orders.deadline', 'orders.purchaser_name as purchaser', 'offers.price', 'offers.currency', 'videos.created_at as videoCreatedAt')
-            ->groupBy('orders.id', 'offers.title', 'offers.description', 'orders.instructions', 'orders.is_private', 'videos.name', 'videos.thumbnail', 'videos.processing_complete', 'orders.deadline', 'orders.purchaser_name', 'offers.price', 'offers.currency', 'videos.created_at')
+            ->select(
+                'orders.id',
+                'offers.title',
+                'offers.description',
+                'orders.instructions',
+                'orders.is_private as isPrivate',
+                'videos.name as videoName',
+                'videos.thumbnail',
+                'videos.processing_complete as processingComplete',
+                'orders.deadline',
+                'orders.purchaser_name as purchaser',
+                'offers.price',
+                'offers.currency',
+                'videos.created_at as videoCreatedAt',
+                'orders.for_whom as forWhom',
+                'orders.occasion',
+            )
+            ->groupBy(
+                'orders.id',
+                'offers.title',
+                'offers.description',
+                'orders.instructions',
+                'orders.is_private',
+                'videos.name',
+                'videos.thumbnail',
+                'videos.processing_complete',
+                'orders.deadline',
+                'orders.purchaser_name',
+                'offers.price',
+                'offers.currency',
+                'videos.created_at',
+                'orders.for_whom',
+                'orders.occasion',
+            )
             ->orderBy('videos.created_at', 'desc')
             ->orderBy('orders.created_at', 'desc')
             ->get();

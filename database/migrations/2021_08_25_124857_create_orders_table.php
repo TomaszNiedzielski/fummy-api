@@ -18,6 +18,8 @@ class CreateOrdersTable extends Migration
             $table->foreignId('offer_id')->constrained()->onDelete('cascade');
             $table->string('purchaser_name');
             $table->string('purchaser_email');
+            $table->string('for_whom')->nullable();
+            $table->string('occasion');
             $table->text('instructions');
             $table->boolean('is_private');
             $table->boolean('is_paid')->default(false);

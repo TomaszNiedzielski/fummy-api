@@ -122,4 +122,15 @@ class OfferRepository implements OfferInterface
 
         return (object) ['code' => 200, 'data' => $offers];
     }
+
+    public static function createDefaultOffer()
+    {
+        Offer::create([
+            'user_id' => auth()->user()->id,
+            'title' => 'Video na każdą okazje.',
+            'description' => 'Zamów spersonalizowaną wiadomość wideo, na każdą okazję, dla Ciebie lub bliskiej Ci osoby.',
+            'price' => '2',
+            'currency' => 'PLN',
+        ]);
+    }
 }

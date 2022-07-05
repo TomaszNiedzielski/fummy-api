@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
-use App\Repositories\OrderRepository;
+use App\Repositories\{OrderRepository, OfferRepository};
 use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
@@ -61,6 +61,7 @@ class AuthController extends Controller
         ];
 
         OrderRepository::makeWelcomeOrder();
+        OfferRepository::createDefaultOffer();
 
         // send verification email
         if (\Config::get('constans.app_env') === 'production') {

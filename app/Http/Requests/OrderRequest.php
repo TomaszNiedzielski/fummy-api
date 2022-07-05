@@ -24,10 +24,14 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:50',
+            'name' => 'max:50',
             'email' => 'required|string|email|max:255',
             'instructions' => 'max:500',
-            'offerId' => 'required|numeric'
+            'offerId' => 'required|numeric',
+            'forWhom' => 'required|string',
+            'fromWhoName' => 'string|max:50',
+            'forWhomName' => 'string|max:50',
+            'occasion' => 'required|string|max:256',
         ];
     }
 }

@@ -26,7 +26,7 @@ class OfferRequest extends FormRequest
         return [
             'offers.*.title' => 'required|string|between:1,30',
             'offers.*.description' => 'required|string|between:1,255',
-            'offers.*.price' => 'required|numeric|min:0',
+            'offers.*.price' => 'required|numeric|min:2',
             'offers.*.currency' => 'required|string|max:3'
         ];
     }
