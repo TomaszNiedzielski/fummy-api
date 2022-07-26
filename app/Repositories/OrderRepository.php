@@ -225,6 +225,7 @@ class OrderRepository implements OrderInterface
             'offer_id' => $offer->id,
             'purchaser_name' => 'Fummy',
             'purchaser_email' => \Config::get('constans.mail_from_address'),
+            'occasion' => 'Dołączenie do Fummy',
             'instructions' => 'Nagraj video powitalne, na którym użyjesz nazwy serwisu i zaprosisz swoich fanów do zakupów. Pamiętaj, że video musi zostać wykonane w orientacji pionowej i nie może być dłuższe niż jedna minuta.',
             'is_private' => 0,
             'is_paid' => 1,
