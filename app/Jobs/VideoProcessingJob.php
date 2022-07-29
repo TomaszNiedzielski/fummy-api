@@ -112,6 +112,14 @@ class VideoProcessingJob implements ShouldQueue
             $commission = \Config::get('constans.commission_if_delivery_in_24h');
         }
 
+        $customCommission = DB::table('commissions')
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        if ($customCommission) {
+            $commission = $customCommission->rate;
+        }
+
         $netAmount = (float)$grossAmount*(1-$commission);
 
         Log::info($netAmount);
