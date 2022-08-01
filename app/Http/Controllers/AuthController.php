@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ResponseAPI;
 use App\Http\Requests\{RegisterRequest, LoginRequest};
+use App\Models\Commission;
 use App\Repositories\{OrderRepository, OfferRepository};
 use Illuminate\Support\Facades\Route;
+use DB;
 
 class AuthController extends Controller
 {
@@ -46,6 +48,8 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
+        DB::beginTransaction();
+
         $user = new User;
         $user->full_name = $request->fullName;
         $user->email = $request->email;
@@ -62,6 +66,9 @@ class AuthController extends Controller
 
         OrderRepository::makeWelcomeOrder();
         OfferRepository::createDefaultOffer();
+        $this->createCustomCommissionRate($user->id);
+        
+        DB::commit();
 
         // send verification email
         if (\Config::get('constans.app_env') === 'production') {
@@ -69,6 +76,18 @@ class AuthController extends Controller
         }
 
         return $this->success($data, 'User successfully registered.');
+    }
+
+    /**
+     * Temp function for custom commissions
+     * Should be deleted if more than 10 influencers
+     */
+    private function createCustomCommissionRate($userId)
+    {
+        Commission::create([
+            'user_id' => $userId,
+            'rate' => 0,
+        ]);
     }
 
     /**
