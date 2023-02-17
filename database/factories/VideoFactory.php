@@ -15,6 +15,7 @@ class VideoFactory extends Factory
     protected $model = Video::class;
 
     private $id = 1;
+    private $userId = 1;
 
     /**
      * Define the model's default state.
@@ -23,21 +24,11 @@ class VideoFactory extends Factory
      */
     public function definition()
     {
-        // It should be deleted after refacting "video.user_id"
-        $id = $this->getId();
-        $userId = $id;
+        $id = $this->id;
+        $userId = $this->userId;
 
-        if ($id > 1200) {
-            $userId = intval($id / 7);
-        }
-
-        if ($id > 700 && $id <= 1200) {
-            $userId = intval($id / 5);
-        }
-
-        if ($id > 299 && $id <= 700) {
-            $userId = intval($id / 3);
-        }
+        $this->id = $id + 1;
+        $this->userId = $userId < 30 ? $userId + 1 : 1;
 
         return [
             'user_id' => $userId,
@@ -46,13 +37,5 @@ class VideoFactory extends Factory
             'order_id' => $id,
             'processing_complete' => 1
         ];
-    }
-
-    private function getId(): int
-    {
-        $id = $this->id;
-        $this->id += 1;
-
-        return $id;
     }
 }

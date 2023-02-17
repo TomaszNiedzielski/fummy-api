@@ -27,6 +27,8 @@ class OrderFactory extends Factory
             'offer_id' => $this->getId(),
             'purchaser_name' => $this->faker->name,
             'purchaser_email' => $this->faker->email,
+            'for_whom' => $this->faker->name,
+            'occasion' => $this->faker->text(10),
             'instructions' => $this->faker->text(200),
             'is_private' => 0,
             'is_paid' => 1,

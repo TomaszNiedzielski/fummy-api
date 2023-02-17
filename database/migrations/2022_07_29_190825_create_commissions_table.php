@@ -19,7 +19,7 @@ class CreateCommissionsTable extends Migration
     {
         Schema::create('commissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
+            $table->integer('user_id')->unique();
             $table->decimal('rate', 3, 2);
             $table->timestamps();
         });

@@ -15,7 +15,7 @@ class CreatePayoutsTable extends Migration
     {
         Schema::create('payouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->integer('user_id');
             $table->decimal('amount');
             $table->boolean('is_complete')->default(false);
             $table->timestamps();

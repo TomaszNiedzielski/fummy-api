@@ -18,7 +18,7 @@ class CreateReviewsTable extends Migration
             $table->char('rate', 1)->nullable();
             $table->string('client_name')->nullable();
             $table->text('text')->nullable();
-            $table->foreignId('video_id')->constrained()->onDelete('cascade');
+            $table->integer('video_id');
             $table->string('access_key');
             $table->boolean('is_key_sent')->default(false);
             $table->timestamps();
